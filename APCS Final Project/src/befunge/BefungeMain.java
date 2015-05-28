@@ -26,6 +26,8 @@ public class BefungeMain {
 	private JPanel panel;
 	private JTextArea textArea;
 	private JScrollPane scroller;
+	private JScrollPane stackScroller;
+	private JScrollPane outputScroller;
 	private JPanel inputPanel;
 	private JButton runButton;
 	private JButton closeButton;

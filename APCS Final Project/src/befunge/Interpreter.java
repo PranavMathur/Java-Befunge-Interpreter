@@ -21,6 +21,8 @@ public class Interpreter {
 	}
 
 	public int pop() {
+		if (stack.isEmpty())
+			return 0;
 		return stack.pop();
 	}
 	

@@ -20,6 +20,8 @@ public class Stack {
 	}
 	
 	public int peek() {
+		if (isEmpty())
+			return 0;
 		return top.getData();
 	}
 	
