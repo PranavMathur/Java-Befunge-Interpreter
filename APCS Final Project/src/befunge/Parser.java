@@ -1,5 +1,7 @@
 package befunge;
 
+import java.util.Arrays;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -11,6 +13,7 @@ public class Parser {
 	private CardinalDirections currentDir = CardinalDirections.RIGHT;
 	
 	private boolean isRunning = true;
+	private boolean readingString = false;
 	
 	public static final int MAX_X = 80;
 	public static final int MAX_Y = 25;
@@ -31,6 +34,9 @@ public class Parser {
 
 	public Parser(JFrame frame) {
 		tokens = new String[MAX_Y][MAX_X];
+		for (String[] line : tokens) {
+			Arrays.fill(line, " ");
+		}
 		iptr = new Interpreter();
 		this.frame = frame;
 	}
@@ -93,8 +99,21 @@ public class Parser {
 		else {
 			currentY++;
 		}
-		currentX %= tokens[0].length;
-		currentY %= tokens.length;
+		if (currentX < 0) {
+			currentX += MAX_X;;
+		}
+		if (currentY < 0) {
+			currentY += MAX_Y;
+		}
+		if (currentX >= MAX_X) {
+			currentX -= MAX_X;
+		}
+		if (currentY >= MAX_Y) {
+			currentY -= MAX_Y;
+		}
+		if (!readingString && (getToken(currentX, currentY) == null || getToken(currentX, currentY).equals(" "))) {
+			advance();
+		}
 	}
 	
 	public CardinalDirections newDirection(int i) {
@@ -292,6 +311,7 @@ public class Parser {
 	}
 	
 	public void interpretString() {
+		readingString = true;
 		advance();
 		String currentToken = getToken(currentX, currentY);
 		while (!currentToken.equals("\"")) {
@@ -299,6 +319,7 @@ public class Parser {
 			advance();
 			currentToken = getToken(currentX, currentY);
 		}
+		readingString = false;
 	}
 	
 	public void pushOutput(String str) {

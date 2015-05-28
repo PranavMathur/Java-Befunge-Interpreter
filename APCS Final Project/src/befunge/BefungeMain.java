@@ -19,6 +19,9 @@ import javax.swing.Timer;
 
 public class BefungeMain {
 	
+	private static final int CRAWL_STEP_TIME = 333;
+	private static final int WALK_STEP_TIME = 100;
+	
 	private JFrame frame;
 	private JPanel panel;
 	private JTextArea textArea;
@@ -81,16 +84,18 @@ public class BefungeMain {
 		inputPanel.add(closeButton);
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
+		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));
 		stackStream.setEditable(false);
 		panel.add(stackStream);
 		outputStream = new JTextArea("");
+		outputStream.setFont(new Font("Courier", Font.PLAIN, 12));
 		outputStream.setEditable(false);
 		panel.add(outputStream);
 		frame.getContentPane().add(BorderLayout.CENTER, panel);
 		frame.pack();
 		frame.setLocationByPlatform(true);
 		frame.setVisible(true);
-		frame.setResizable(false);
+		frame.setResizable(true);
 	}
 	
 	public static void main(String[] args) {
@@ -120,7 +125,7 @@ public class BefungeMain {
 		public void actionPerformed(ActionEvent e) {
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
-			Timer timer = new Timer(300, new ActionListener() {
+			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
@@ -139,7 +144,7 @@ public class BefungeMain {
 		public void actionPerformed(ActionEvent e) {
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
-			Timer timer = new Timer(1000, new ActionListener() {
+			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
