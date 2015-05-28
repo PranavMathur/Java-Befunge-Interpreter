@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.Timer;
 
 public class BefungeMain {
 	
@@ -39,8 +40,6 @@ public class BefungeMain {
 	private ResetActionListener resetter = new ResetActionListener();
 	
 	private Parser p;
-	
-	public static String[][] tokens = new String[5][5];
 
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
@@ -98,11 +97,12 @@ public class BefungeMain {
 		BefungeMain gui = new BefungeMain();
 	}
 	
-	public class RunActionListener implements ActionListener {
+	private class RunActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+			if (p == null)
+				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
 			while (p.isRunning()) {
 				p.interpret();
 				p.advance();
@@ -114,36 +114,45 @@ public class BefungeMain {
 		
 	}
 	
-	public class WalkActionListener implements ActionListener {
+	private class WalkActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
-			while (p.isRunning()) {
-				p.interpret();
-				p.advance();
-				stackStream.setText(p.getInterpreter().getStack().toString());
-				outputStream.setText(p.getOutput());
-				try {
-					Thread.sleep(100);
-				} catch(InterruptedException ex) {
-					
+			if (p == null)
+				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+			Timer timer = new Timer(300, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					p.interpret();
+					p.advance();
+					stackStream.setText(p.getInterpreter().getStack().toString());
+					outputStream.setText(p.getOutput());
 				}
-			}
+			});
+			timer.start();
 		}
 		
 	}
 	
-	public class CrawlActionListener implements ActionListener {
+	private class CrawlActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			if (p == null)
+				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+			Timer timer = new Timer(1000, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					p.interpret();
+					p.advance();
+					stackStream.setText(p.getInterpreter().getStack().toString());
+					outputStream.setText(p.getOutput());
+				}
+			});
+			timer.start();
 		}
 		
 	}
 	
-	public class StepActionListener implements ActionListener {
+	private class StepActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -158,7 +167,7 @@ public class BefungeMain {
 		
 	}
 	
-	public class ResetActionListener implements ActionListener {
+	private class ResetActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {

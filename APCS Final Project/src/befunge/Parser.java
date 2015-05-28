@@ -37,6 +37,8 @@ public class Parser {
 	
 	public Parser(String rawTokens, JFrame frame) {
 		this(frame);
+		if (rawTokens.equals(""))
+			rawTokens = "  \n  ";
 		fillArray(rawTokens);
 	}
 	
