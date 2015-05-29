@@ -10,12 +10,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
+
+import java.io.*;
+import java.util.Scanner;
 
 public class BefungeMain {
 	
@@ -35,6 +39,7 @@ public class BefungeMain {
 	private JButton crawlButton;
 	private JButton stepButton;
 	private JButton resetButton;
+	private JButton fileButton;
 	private JTextField stackStream;
 	private JTextArea outputStream;
 	
@@ -43,6 +48,7 @@ public class BefungeMain {
 	private CrawlActionListener crawler = new CrawlActionListener();
 	private StepActionListener stepper = new StepActionListener();
 	private ResetActionListener resetter = new ResetActionListener();
+	private FileReaderActionListener reader = new FileReaderActionListener();
 	
 	private Parser p;
 
@@ -77,6 +83,8 @@ public class BefungeMain {
 		stepButton.addActionListener(stepper);
 		resetButton = new JButton("Reset");
 		resetButton.addActionListener(resetter);
+		fileButton = new JButton("Run File");
+		fileButton.addActionListener(reader);
 		panel.add(scroller);
 		inputPanel.add(runButton);
 		inputPanel.add(walkButton);
@@ -84,6 +92,7 @@ public class BefungeMain {
 		inputPanel.add(stepButton);
 		inputPanel.add(resetButton);
 		inputPanel.add(closeButton);
+		inputPanel.add(fileButton);
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
 		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));
@@ -100,8 +109,22 @@ public class BefungeMain {
 		frame.setResizable(true);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+//		Scanner s = null;
+//
+//		try {
+//			s = new Scanner(new BufferedReader(new FileReader("E:\\APCS Final Project\\src\\befunge\\test.txt")));
+//			while (s.hasNext()) {
+//				System.out.println(s.next());
+//			}
+//		} finally {
+//			if (s != null) {
+//				s.close();
+//			}
+//		}
+		
 		BefungeMain gui = new BefungeMain();
+		
 	}
 	
 	private class RunActionListener implements ActionListener {
@@ -133,6 +156,8 @@ public class BefungeMain {
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
+					if (!p.isRunning())
+						p = null;
 				}
 			});
 			timer.start();
@@ -152,6 +177,8 @@ public class BefungeMain {
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
+					if (!p.isRunning())
+						p = null;
 				}
 			});
 			timer.start();
@@ -166,8 +193,10 @@ public class BefungeMain {
 			if (p == null) {
 				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
 			}
-			p.interpret();
-			p.advance();
+			if (p.isRunning()) {
+				p.interpret();
+				p.advance();
+			}
 			stackStream.setText(p.getInterpreter().getStack().toString());
 			outputStream.setText(p.getOutput());
 		}
@@ -181,6 +210,20 @@ public class BefungeMain {
 			p = null;
 			stackStream.setText("");
 			outputStream.setText("");
+		}
+		
+	}
+	
+	private class FileReaderActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String s = (String)JOptionPane.showInputDialog(
+	                frame,
+	                "Enter a file name:");
+			frame.setVisible(false);
+			frame.dispose();
+			
 		}
 		
 	}
