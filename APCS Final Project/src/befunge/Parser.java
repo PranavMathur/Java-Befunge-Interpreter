@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class Parser {
 	
-	private String[][] tokens;
+	private String[][] tokens = new String[MAX_Y][MAX_X];
 	private int currentX = 0;
 	private int currentY = 0;
 	private CardinalDirections currentDir = CardinalDirections.RIGHT;
@@ -20,7 +20,7 @@ public class Parser {
 	
 	private StringBuilder output = new StringBuilder();
 
-	private Interpreter iptr;
+	private Interpreter iptr = new Interpreter();
 	
 	public Interpreter getInterpreter() {
 		return iptr;
@@ -57,7 +57,6 @@ public class Parser {
 	}
 	
 	public void fillArray(String[] rawTokens) {
-		System.out.println(Arrays.toString(rawTokens));
 		for (int currentRow = 0; currentRow < rawTokens.length && currentRow < MAX_Y; currentRow++) {
 			for (int i = 0; i < rawTokens[currentRow].length() && i < MAX_X; i++) {
 				tokens[currentRow][i] = rawTokens[currentRow].substring(i,  i+1);

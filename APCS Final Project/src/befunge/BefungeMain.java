@@ -120,6 +120,26 @@ public class BefungeMain {
 		frame.setVisible(true);
 		frame.setResizable(true);
 	}
+	
+	private void saveFile() {
+		String str = BefungeMain.this.currentFile;
+		if (str == null) {
+			str = (String)JOptionPane.showInputDialog(
+					frame,
+					"Enter a file name:");
+			if (str == null)
+				return;
+			BefungeMain.this.currentFile = str;
+		}
+		try {
+			PrintWriter writer = new PrintWriter(str, "UTF-8");
+			writer.print(BefungeMain.this.textArea.getText());
+			writer.close();
+		}
+		catch (IOException ex) {
+			System.out.println("Exception");
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 
@@ -215,6 +235,8 @@ public class BefungeMain {
 			String str = (String)JOptionPane.showInputDialog(
 					frame,
 					"Enter a file name:");
+			if (str == null)
+				return;
 			BefungeMain.this.currentFile = str;
 
 			Scanner s = null;
@@ -245,21 +267,7 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String str = BefungeMain.this.currentFile;
-			if (str == null) {
-				str = (String)JOptionPane.showInputDialog(
-						frame,
-						"Enter a file name:");
-				BefungeMain.this.currentFile = str;
-			}
-			try {
-				PrintWriter writer = new PrintWriter(str, "UTF-8");
-				writer.print(BefungeMain.this.textArea.getText());
-				writer.close();
-			}
-			catch (IOException ex) {
-				System.out.println("Exception");
-			}
+			BefungeMain.this.saveFile();
 		}
 
 	}
@@ -270,24 +278,7 @@ public class BefungeMain {
 		public void actionPerformed(ActionEvent e) {
 			int response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
 			if (response == 0) {
-				try {
-					if (currentFile != null) {
-						PrintWriter writer = new PrintWriter(BefungeMain.this.currentFile, "UTF-8");
-						writer.print(BefungeMain.this.textArea.getText());
-						writer.close();
-					}
-					else {
-						String str = (String)JOptionPane.showInputDialog(
-								BefungeMain.this.frame,
-								"Enter a file name:");
-						PrintWriter writer = new PrintWriter(str, "UTF-8");
-						writer.print(BefungeMain.this.textArea.getText());
-						writer.close();
-					}
-				}
-				catch (IOException ex) {
-					System.out.println("Exception");
-				}
+				BefungeMain.this.saveFile();
 				BefungeMain.this.frame.setVisible(false);
 				BefungeMain.this.frame.dispose();
 			}
