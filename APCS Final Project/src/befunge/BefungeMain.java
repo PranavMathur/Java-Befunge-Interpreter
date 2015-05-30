@@ -54,7 +54,6 @@ public class BefungeMain {
 	private WalkActionListener walker = new WalkActionListener();
 	private CrawlActionListener crawler = new CrawlActionListener();
 	private StepActionListener stepper = new StepActionListener();
-	private ResetActionListener resetter = new ResetActionListener();
 	private FileReaderActionListener reader = new FileReaderActionListener();
 	private SaveActionListener saver = new SaveActionListener();
 	private CloseActionListener closer = new CloseActionListener();
@@ -79,9 +78,32 @@ public class BefungeMain {
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new FlowLayout());
 		menuBar = new JMenuBar();
-
+		fileMenu = new JMenu("File");
+		importItem = new JMenuItem("Import File");
+		importItem.addActionListener(reader);
+		saveItem = new JMenuItem("Save File");
+		saveItem.addActionListener(saver);
+		exitItem = new JMenuItem("Exit");
+		exitItem.addActionListener(closer);
+		fileMenu.add(importItem);
+		fileMenu.add(saveItem);
+		fileMenu.add(exitItem);
+		menuBar.add(fileMenu);
+		runMenu = new JMenu("Run");
+		runItem = new JMenuItem("Run");
+		runItem.addActionListener(runner);
+		walkItem = new JMenuItem("Walk");
+		walkItem.addActionListener(walker);
+		crawlItem = new JMenuItem("Crawl");
+		crawlItem.addActionListener(crawler);
+		stepItem = new JMenuItem("Step");
+		stepItem.addActionListener(stepper);
+		runMenu.add(runItem);
+		runMenu.add(walkItem);
+		runMenu.add(crawlItem);
+		runMenu.add(stepItem);
+		menuBar.add(runMenu);
 		panel.add(scroller);
-		
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
 		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));
@@ -92,6 +114,7 @@ public class BefungeMain {
 		outputStream.setEditable(false);
 		panel.add(outputStream);
 		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setLocationByPlatform(true);
 		frame.setVisible(true);
@@ -185,17 +208,6 @@ public class BefungeMain {
 
 	}
 
-	private class ResetActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			p = null;
-			stackStream.setText("");
-			outputStream.setText("");
-		}
-
-	}
-
 	private class FileReaderActionListener implements ActionListener {
 
 		@Override
@@ -233,11 +245,13 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String str = (String)JOptionPane.showInputDialog(
-					frame,
-					"Enter a file name:");
-			BefungeMain.this.currentFile = str;
-			
+			String str = BefungeMain.this.currentFile;
+			if (str == null) {
+				str = (String)JOptionPane.showInputDialog(
+						frame,
+						"Enter a file name:");
+				BefungeMain.this.currentFile = str;
+			}
 			try {
 				PrintWriter writer = new PrintWriter(str, "UTF-8");
 				writer.print(BefungeMain.this.textArea.getText());

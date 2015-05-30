@@ -31,10 +31,6 @@ public class Parser {
 	}
 	
 	public Parser(String rawTokens) {
-		this(rawTokens, null);
-	}
-	
-	public Parser(String rawTokens, JFrame frame) {
 		if (rawTokens.equals(""))
 			rawTokens = "  \n  ";
 		fillArray(rawTokens);
@@ -61,6 +57,7 @@ public class Parser {
 	}
 	
 	public void fillArray(String[] rawTokens) {
+		System.out.println(Arrays.toString(rawTokens));
 		for (int currentRow = 0; currentRow < rawTokens.length && currentRow < MAX_Y; currentRow++) {
 			for (int i = 0; i < rawTokens[currentRow].length() && i < MAX_X; i++) {
 				tokens[currentRow][i] = rawTokens[currentRow].substring(i,  i+1);
