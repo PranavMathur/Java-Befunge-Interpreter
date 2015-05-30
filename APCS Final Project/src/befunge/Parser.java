@@ -22,8 +22,6 @@ public class Parser {
 
 	private Interpreter iptr;
 	
-	private JFrame frame;
-	
 	public Interpreter getInterpreter() {
 		return iptr;
 	}
@@ -31,30 +29,22 @@ public class Parser {
 	public void setInterpreter(Interpreter iptr) {
 		this.iptr = iptr;
 	}
-
-	public Parser(JFrame frame) {
-		tokens = new String[MAX_Y][MAX_X];
-		for (String[] line : tokens) {
-			Arrays.fill(line, " ");
-		}
-		iptr = new Interpreter();
-		this.frame = frame;
+	
+	public Parser(String rawTokens) {
+		this(rawTokens, null);
 	}
 	
 	public Parser(String rawTokens, JFrame frame) {
-		this(frame);
 		if (rawTokens.equals(""))
 			rawTokens = "  \n  ";
 		fillArray(rawTokens);
 	}
 	
 	public Parser(String[] rawTokens, JFrame frame) {
-		this(frame);
 		fillArray(rawTokens);
 	}
 	
 	public Parser(String[][] rawTokens, JFrame frame) {
-		this(frame);
 		fillArray(rawTokens);
 	}
 	
@@ -264,6 +254,7 @@ public class Parser {
 				break;
 			case "@":
 				isRunning = false;
+				System.out.println("done");
 				break;
 			default:
 				break;
@@ -303,10 +294,8 @@ public class Parser {
 	
 	public String prompt(boolean string) {
 		String s = (String)JOptionPane.showInputDialog(
-                frame,
+                null,
                 string ? "Enter a String:" : "Enter an Integer:");
-		frame.setVisible(false);
-		frame.dispose();
 		return s;
 	}
 	

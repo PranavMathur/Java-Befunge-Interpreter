@@ -22,11 +22,12 @@ import java.io.*;
 import java.util.Scanner;
 
 public class BefungeMain {
-	
+
 	private static final int CRAWL_STEP_TIME = 333;
 	private static final int WALK_STEP_TIME = 100;
-	
+
 	private JFrame frame;
+	private JFrame fileFrame;
 	private JPanel panel;
 	private JTextArea textArea;
 	private JScrollPane scroller;
@@ -40,21 +41,28 @@ public class BefungeMain {
 	private JButton stepButton;
 	private JButton resetButton;
 	private JButton fileButton;
+	private JButton saveButton;
 	private JTextField stackStream;
 	private JTextArea outputStream;
-	
+
 	private RunActionListener runner = new RunActionListener();
 	private WalkActionListener walker = new WalkActionListener();
 	private CrawlActionListener crawler = new CrawlActionListener();
 	private StepActionListener stepper = new StepActionListener();
 	private ResetActionListener resetter = new ResetActionListener();
 	private FileReaderActionListener reader = new FileReaderActionListener();
-	
+	private SaveActionListener saver = new SaveActionListener();
+	private CloseActionListener closer = new CloseActionListener();
+
 	private Parser p;
+	
+	private String currentFile;
 
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		fileFrame = new JFrame("Befunge Interpreter");
+		fileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -69,12 +77,6 @@ public class BefungeMain {
 		inputPanel.setLayout(new FlowLayout());
 		runButton = new JButton("Run");
 		runButton.addActionListener(runner);
-		closeButton = new JButton("Close");
-		closeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
 		walkButton = new JButton("Walk");
 		walkButton.addActionListener(walker);
 		crawlButton = new JButton("Crawl");
@@ -83,16 +85,21 @@ public class BefungeMain {
 		stepButton.addActionListener(stepper);
 		resetButton = new JButton("Reset");
 		resetButton.addActionListener(resetter);
-		fileButton = new JButton("Run File");
+		fileButton = new JButton("Import File");
 		fileButton.addActionListener(reader);
+		saveButton = new JButton("Save File");
+		saveButton.addActionListener(saver);
+		closeButton = new JButton("Close");
+		closeButton.addActionListener(closer);
 		panel.add(scroller);
 		inputPanel.add(runButton);
 		inputPanel.add(walkButton);
 		inputPanel.add(crawlButton);
 		inputPanel.add(stepButton);
 		inputPanel.add(resetButton);
-		inputPanel.add(closeButton);
 		inputPanel.add(fileButton);
+		inputPanel.add(saveButton);
+		inputPanel.add(closeButton);
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
 		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));
@@ -108,31 +115,19 @@ public class BefungeMain {
 		frame.setVisible(true);
 		frame.setResizable(true);
 	}
-	
+
 	public static void main(String[] args) throws IOException {
-//		Scanner s = null;
-//
-//		try {
-//			s = new Scanner(new BufferedReader(new FileReader("E:\\APCS Final Project\\src\\befunge\\test.txt")));
-//			while (s.hasNext()) {
-//				System.out.println(s.next());
-//			}
-//		} finally {
-//			if (s != null) {
-//				s.close();
-//			}
-//		}
-		
+
 		BefungeMain gui = new BefungeMain();
 		
 	}
-	
+
 	private class RunActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+				p = new Parser(BefungeMain.this.textArea.getText());
 			while (p.isRunning()) {
 				p.interpret();
 				p.advance();
@@ -141,57 +136,62 @@ public class BefungeMain {
 			outputStream.setText(p.getOutput());
 			p = null;
 		}
-		
+
 	}
-	
+
 	private class WalkActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+				p = new Parser(BefungeMain.this.textArea.getText());
 			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
-					if (!p.isRunning())
+					if (!p.isRunning()) {
 						p = null;
+						((Timer)e.getSource()).stop();
+					}
 				}
 			});
 			timer.start();
 		}
-		
+
 	}
-	
+
 	private class CrawlActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+				p = new Parser(BefungeMain.this.textArea.getText());
 			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
-					if (!p.isRunning())
+					if (!p.isRunning()) {
 						p = null;
+						((Timer)e.getSource()).stop();
+					}
+					
 				}
 			});
 			timer.start();
 		}
-		
+
 	}
-	
+
 	private class StepActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (p == null) {
-				p = new Parser(BefungeMain.this.textArea.getText(), new JFrame("Dialog Box"));
+				p = new Parser(BefungeMain.this.textArea.getText());
 			}
 			if (p.isRunning()) {
 				p.interpret();
@@ -200,9 +200,9 @@ public class BefungeMain {
 			stackStream.setText(p.getInterpreter().getStack().toString());
 			outputStream.setText(p.getOutput());
 		}
-		
+
 	}
-	
+
 	private class ResetActionListener implements ActionListener {
 
 		@Override
@@ -211,21 +211,96 @@ public class BefungeMain {
 			stackStream.setText("");
 			outputStream.setText("");
 		}
-		
+
 	}
-	
+
 	private class FileReaderActionListener implements ActionListener {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			String s = (String)JOptionPane.showInputDialog(
-	                frame,
-	                "Enter a file name:");
-			frame.setVisible(false);
-			frame.dispose();
+		public void actionPerformed(ActionEvent e){
+			String str = (String)JOptionPane.showInputDialog(
+					frame,
+					"Enter a file name:");
+			BefungeMain.this.currentFile = str;
+
+			Scanner s = null;
+			StringBuilder fileStr = new StringBuilder();
 			
+			try {
+				s = new Scanner(new BufferedReader(new FileReader(str)));
+				while (s.hasNext()) {
+					fileStr.append(s.nextLine());
+					fileStr.append("\n");
+				}
+				BefungeMain.this.textArea.setText(fileStr.toString());
+			}
+			catch (IOException ex) {
+				System.out.println("Exception");
+			}
+			finally {
+				if (s != null) {
+					s.close();
+				}
+			}
+
 		}
-		
+
+	}
+	
+	private class SaveActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String str = (String)JOptionPane.showInputDialog(
+					frame,
+					"Enter a file name:");
+			BefungeMain.this.currentFile = str;
+			
+			try {
+				PrintWriter writer = new PrintWriter(str, "UTF-8");
+				writer.print(BefungeMain.this.textArea.getText());
+				writer.close();
+			}
+			catch (IOException ex) {
+				System.out.println("Exception");
+			}
+		}
+
+	}
+	
+	private class CloseActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
+			if (response == 0) {
+				try {
+					if (currentFile != null) {
+						PrintWriter writer = new PrintWriter(BefungeMain.this.currentFile, "UTF-8");
+						writer.print(BefungeMain.this.textArea.getText());
+						writer.close();
+					}
+					else {
+						String str = (String)JOptionPane.showInputDialog(
+								BefungeMain.this.frame,
+								"Enter a file name:");
+						PrintWriter writer = new PrintWriter(str, "UTF-8");
+						writer.print(BefungeMain.this.textArea.getText());
+						writer.close();
+					}
+				}
+				catch (IOException ex) {
+					System.out.println("Exception");
+				}
+				BefungeMain.this.frame.setVisible(false);
+				BefungeMain.this.frame.dispose();
+			}
+			else if (response == 1) {
+				BefungeMain.this.frame.setVisible(false);
+				BefungeMain.this.frame.dispose();
+			}
+		}
+
 	}
 
 }
