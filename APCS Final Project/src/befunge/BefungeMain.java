@@ -10,6 +10,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -34,14 +37,16 @@ public class BefungeMain {
 	private JScrollPane stackScroller;
 	private JScrollPane outputScroller;
 	private JPanel inputPanel;
-	private JButton runButton;
-	private JButton closeButton;
-	private JButton walkButton;
-	private JButton crawlButton;
-	private JButton stepButton;
-	private JButton resetButton;
-	private JButton fileButton;
-	private JButton saveButton;
+	private JMenuBar menuBar;
+	private JMenu fileMenu;
+	private JMenu runMenu;
+	private JMenuItem runItem;
+	private JMenuItem walkItem;
+	private JMenuItem crawlItem;
+	private JMenuItem stepItem;
+	private JMenuItem importItem;
+	private JMenuItem saveItem;
+	private JMenuItem exitItem;
 	private JTextField stackStream;
 	private JTextArea outputStream;
 
@@ -61,8 +66,6 @@ public class BefungeMain {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		fileFrame = new JFrame("Befunge Interpreter");
-		fileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -75,31 +78,10 @@ public class BefungeMain {
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		inputPanel = new JPanel();
 		inputPanel.setLayout(new FlowLayout());
-		runButton = new JButton("Run");
-		runButton.addActionListener(runner);
-		walkButton = new JButton("Walk");
-		walkButton.addActionListener(walker);
-		crawlButton = new JButton("Crawl");
-		crawlButton.addActionListener(crawler);
-		stepButton = new JButton("Step");
-		stepButton.addActionListener(stepper);
-		resetButton = new JButton("Reset");
-		resetButton.addActionListener(resetter);
-		fileButton = new JButton("Import File");
-		fileButton.addActionListener(reader);
-		saveButton = new JButton("Save File");
-		saveButton.addActionListener(saver);
-		closeButton = new JButton("Close");
-		closeButton.addActionListener(closer);
+		menuBar = new JMenuBar();
+
 		panel.add(scroller);
-		inputPanel.add(runButton);
-		inputPanel.add(walkButton);
-		inputPanel.add(crawlButton);
-		inputPanel.add(stepButton);
-		inputPanel.add(resetButton);
-		inputPanel.add(fileButton);
-		inputPanel.add(saveButton);
-		inputPanel.add(closeButton);
+		
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
 		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));

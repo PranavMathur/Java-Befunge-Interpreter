@@ -254,7 +254,6 @@ public class Parser {
 				break;
 			case "@":
 				isRunning = false;
-				System.out.println("done");
 				break;
 			default:
 				break;
