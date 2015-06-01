@@ -40,13 +40,14 @@ public class BefungeMain {
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
 	private JMenu runMenu;
-	private JMenuItem runItem;
-	private JMenuItem walkItem;
-	private JMenuItem crawlItem;
-	private JMenuItem stepItem;
 	private JMenuItem importItem;
 	private JMenuItem saveItem;
 	private JMenuItem exitItem;
+	private JMenuItem runItem;
+	private JMenuItem walkItem;
+	private JMenuItem crawlItem;
+	private JMenuItem resetItem;
+	private JButton stepItem;
 	private JTextField stackStream;
 	private JTextArea outputStream;
 
@@ -57,6 +58,7 @@ public class BefungeMain {
 	private FileReaderActionListener reader = new FileReaderActionListener();
 	private SaveActionListener saver = new SaveActionListener();
 	private CloseActionListener closer = new CloseActionListener();
+	private ResetActionListener resetter = new ResetActionListener();
 
 	private Parser p;
 	
@@ -87,6 +89,7 @@ public class BefungeMain {
 		exitItem.addActionListener(closer);
 		fileMenu.add(importItem);
 		fileMenu.add(saveItem);
+		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 		menuBar.add(fileMenu);
 		runMenu = new JMenu("Run");
@@ -96,13 +99,17 @@ public class BefungeMain {
 		walkItem.addActionListener(walker);
 		crawlItem = new JMenuItem("Crawl");
 		crawlItem.addActionListener(crawler);
-		stepItem = new JMenuItem("Step");
-		stepItem.addActionListener(stepper);
+		resetItem = new JMenuItem("Reset");
+		resetItem.addActionListener(resetter);
 		runMenu.add(runItem);
 		runMenu.add(walkItem);
 		runMenu.add(crawlItem);
-		runMenu.add(stepItem);
+		runMenu.addSeparator();
+		runMenu.add(resetItem);
 		menuBar.add(runMenu);
+		stepItem = new JButton("Step");
+		stepItem.addActionListener(stepper);
+		menuBar.add(stepItem);
 		panel.add(scroller);
 		panel.add(inputPanel);
 		stackStream = new JTextField("");
@@ -207,6 +214,17 @@ public class BefungeMain {
 				}
 			});
 			timer.start();
+		}
+
+	}
+	
+	private class ResetActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			p = null;
+			stackStream.setText("");
+			outputStream.setText("");
 		}
 
 	}
