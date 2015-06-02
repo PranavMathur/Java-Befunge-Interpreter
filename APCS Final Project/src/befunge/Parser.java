@@ -14,6 +14,7 @@ public class Parser {
 	
 	private boolean isRunning = true;
 	private boolean readingString = false;
+	private boolean updateNeeded = false;
 	
 	public static final int MAX_X = 80;
 	public static final int MAX_Y = 25;
@@ -225,6 +226,7 @@ public class Parser {
 				break;
 			case "p":
 				put(iptr.pop(), iptr.pop(), iptr.pop());
+				updateNeeded = true;
 				break;
 			case "g":
 				iptr.push(get(iptr.pop(), iptr.pop()));
@@ -256,6 +258,14 @@ public class Parser {
 		}
 	}
 	
+	public boolean isUpdateNeeded() {
+		return updateNeeded;
+	}
+
+	public void setUpdateNeeded(boolean updateNeeded) {
+		this.updateNeeded = updateNeeded;
+	}
+
 	private void jumpOver() {
 		advance();
 		String currentToken = getToken(currentX, currentY);
@@ -318,6 +328,20 @@ public class Parser {
 		currentX = 0;
 		currentY = 0;
 		iptr = new Interpreter();
+	}
+	
+	public String getRawTokens() {
+		StringBuilder str = new StringBuilder();
+		for (String[] arr: tokens) {
+			for (String i : arr) {
+				if (i == null)
+					str.append(" ");
+				else
+					str.append(i);
+			}
+			str.append("\n");
+		}
+		return str.toString();
 	}
 	
 	public String[][] getTokens() {

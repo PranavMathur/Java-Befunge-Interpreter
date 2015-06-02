@@ -63,6 +63,7 @@ public class BefungeMain {
 	private Parser p;
 	
 	private String currentFile;
+	private String originalText;
 
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
@@ -158,6 +159,8 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (originalText == null)
+				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
 			while (p.isRunning()) {
@@ -175,6 +178,8 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (originalText == null)
+				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
 			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
@@ -183,10 +188,14 @@ public class BefungeMain {
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
+					if (p.isUpdateNeeded()) {
+						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+					}
 					if (!p.isRunning()) {
 						p = null;
 						((Timer)e.getSource()).stop();
 					}
+					
 				}
 			});
 			timer.start();
@@ -198,6 +207,8 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (originalText == null)
+				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
 			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
@@ -206,11 +217,13 @@ public class BefungeMain {
 					p.advance();
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
+					if (p.isUpdateNeeded()) {
+						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+					}
 					if (!p.isRunning()) {
 						p = null;
 						((Timer)e.getSource()).stop();
 					}
-					
 				}
 			});
 			timer.start();
@@ -223,6 +236,7 @@ public class BefungeMain {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			p = null;
+			textArea.setText(originalText.trim());
 			stackStream.setText("");
 			outputStream.setText("");
 		}
@@ -233,6 +247,8 @@ public class BefungeMain {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if (originalText == null)
+				originalText = BefungeMain.this.textArea.getText();
 			if (p == null) {
 				p = new Parser(BefungeMain.this.textArea.getText());
 			}
@@ -242,6 +258,9 @@ public class BefungeMain {
 			}
 			stackStream.setText(p.getInterpreter().getStack().toString());
 			outputStream.setText(p.getOutput());
+			if (p.isUpdateNeeded()) {
+				BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+			}
 		}
 
 	}
