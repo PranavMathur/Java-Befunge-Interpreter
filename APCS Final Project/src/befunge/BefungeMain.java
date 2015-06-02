@@ -190,6 +190,7 @@ public class BefungeMain {
 					outputStream.setText(p.getOutput());
 					if (p.isUpdateNeeded()) {
 						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+						p.setUpdateNeeded(false);
 					}
 					if (!p.isRunning()) {
 						p = null;
@@ -219,6 +220,7 @@ public class BefungeMain {
 					outputStream.setText(p.getOutput());
 					if (p.isUpdateNeeded()) {
 						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+						p.setUpdateNeeded(false);
 					}
 					if (!p.isRunning()) {
 						p = null;
@@ -260,6 +262,7 @@ public class BefungeMain {
 			outputStream.setText(p.getOutput());
 			if (p.isUpdateNeeded()) {
 				BefungeMain.this.textArea.setText(p.getRawTokens().trim());
+				p.setUpdateNeeded(false);
 			}
 		}
 
