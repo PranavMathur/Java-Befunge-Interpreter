@@ -40,8 +40,10 @@ public class BefungeMain {
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
 	private JMenu runMenu;
+	private JMenuItem newItem;
 	private JMenuItem importItem;
 	private JMenuItem saveItem;
+	private JMenuItem saveAsItem;
 	private JMenuItem exitItem;
 	private JMenuItem runItem;
 	private JMenuItem walkItem;
@@ -57,6 +59,7 @@ public class BefungeMain {
 	private StepActionListener stepper = new StepActionListener();
 	private FileReaderActionListener reader = new FileReaderActionListener();
 	private SaveActionListener saver = new SaveActionListener();
+	private SaveAsActionListener saveAser = new SaveAsActionListener();
 	private CloseActionListener closer = new CloseActionListener();
 	private ResetActionListener resetter = new ResetActionListener();
 
@@ -82,14 +85,17 @@ public class BefungeMain {
 		inputPanel.setLayout(new FlowLayout());
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
-		importItem = new JMenuItem("Import File");
+		importItem = new JMenuItem("Open");
 		importItem.addActionListener(reader);
-		saveItem = new JMenuItem("Save File");
+		saveItem = new JMenuItem("Save");
 		saveItem.addActionListener(saver);
+		saveAsItem = new JMenuItem("Save As");
+		saveAsItem.addActionListener(saveAser);
 		exitItem = new JMenuItem("Exit");
 		exitItem.addActionListener(closer);
 		fileMenu.add(importItem);
 		fileMenu.add(saveItem);
+		fileMenu.add(saveAsItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 		menuBar.add(fileMenu);
@@ -151,7 +157,7 @@ public class BefungeMain {
 
 	public static void main(String[] args) throws IOException {
 
-		BefungeMain gui = new BefungeMain();
+		BefungeMain GUI = new BefungeMain();
 		
 	}
 
@@ -238,7 +244,8 @@ public class BefungeMain {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			p = null;
-			textArea.setText(originalText.trim());
+			textArea.setText(originalText == null ? "" : originalText.trim());
+			originalText = null;
 			stackStream.setText("");
 			outputStream.setText("");
 		}
@@ -267,6 +274,15 @@ public class BefungeMain {
 		}
 
 	}
+	
+	private class NewActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+
+	}
 
 	private class FileReaderActionListener implements ActionListener {
 
@@ -289,6 +305,7 @@ public class BefungeMain {
 					fileStr.append("\n");
 				}
 				BefungeMain.this.textArea.setText(fileStr.toString());
+				originalText = fileStr.toString();
 			}
 			catch (IOException ex) {
 				System.out.println("Exception");
@@ -312,10 +329,26 @@ public class BefungeMain {
 
 	}
 	
+	private class SaveAsActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			BefungeMain.this.currentFile = null;
+			BefungeMain.this.saveFile();
+		}
+
+	}
+	
 	private class CloseActionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			if ((originalText == null ^ textArea.getText() == null)
+						|| originalText.trim().equals(textArea.getText().trim())) {
+				BefungeMain.this.frame.setVisible(false);
+				BefungeMain.this.frame.dispose();
+				return;
+			}
 			int response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
 			if (response == 0) {
 				BefungeMain.this.saveFile();
