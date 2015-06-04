@@ -1,6 +1,7 @@
 package befunge;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -49,9 +50,11 @@ public class BefungeMain {
 	private JMenuItem walkItem;
 	private JMenuItem crawlItem;
 	private JMenuItem resetItem;
+	private JMenuItem terminateItem;
 	private JButton stepItem;
+	private JTextField statusStream;
 	private JTextField stackStream;
-	private JTextArea outputStream;
+	private JTextField outputStream;
 
 	private RunActionListener runner = new RunActionListener();
 	private WalkActionListener walker = new WalkActionListener();
@@ -62,11 +65,17 @@ public class BefungeMain {
 	private SaveAsActionListener saveAser = new SaveAsActionListener();
 	private CloseActionListener closer = new CloseActionListener();
 	private ResetActionListener resetter = new ResetActionListener();
+	private TerminateActionListener terminator = new TerminateActionListener();
 
 	private Parser p;
 	
 	private String currentFile;
 	private String originalText;
+	
+	private boolean terminated;
+	
+	private int lastX;
+	private int lastY;
 
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
@@ -108,10 +117,13 @@ public class BefungeMain {
 		crawlItem.addActionListener(crawler);
 		resetItem = new JMenuItem("Reset");
 		resetItem.addActionListener(resetter);
+		terminateItem = new JMenuItem("Terminate");
+		terminateItem.addActionListener(terminator);
 		runMenu.add(runItem);
 		runMenu.add(walkItem);
 		runMenu.add(crawlItem);
 		runMenu.addSeparator();
+		runMenu.add(terminateItem);
 		runMenu.add(resetItem);
 		menuBar.add(runMenu);
 		stepItem = new JButton("Step");
@@ -119,11 +131,15 @@ public class BefungeMain {
 		menuBar.add(stepItem);
 		panel.add(scroller);
 		panel.add(inputPanel);
+		statusStream = new JTextField("");
+		statusStream.setFont(new Font("Courier", Font.PLAIN, 12));
+		statusStream.setEditable(false);
+		panel.add(statusStream);
 		stackStream = new JTextField("");
 		stackStream.setFont(new Font("Courier", Font.PLAIN, 12));
 		stackStream.setEditable(false);
 		panel.add(stackStream);
-		outputStream = new JTextArea("");
+		outputStream = new JTextField("");
 		outputStream.setFont(new Font("Courier", Font.PLAIN, 12));
 		outputStream.setEditable(false);
 		panel.add(outputStream);
@@ -169,10 +185,14 @@ public class BefungeMain {
 				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
-			while (p.isRunning()) {
+			terminated = false;
+			while (p.isRunning() && !terminated) {
 				p.interpret();
 				p.advance();
+				lastX = p.getCurrentX();
+				lastY = p.getCurrentY();
 			}
+			statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
 			stackStream.setText(p.getInterpreter().getStack().toString());
 			outputStream.setText(p.getOutput());
 			p = null;
@@ -188,21 +208,24 @@ public class BefungeMain {
 				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
+			terminated = false;
 			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
+					statusStream.setText("Status: Running. x = "
+								+ (lastX = p.getCurrentX()) + ", y = " + (lastY = p.getCurrentY()));
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
 					if (p.isUpdateNeeded()) {
 						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
 						p.setUpdateNeeded(false);
 					}
-					if (!p.isRunning()) {
+					if (!p.isRunning() || terminated) {
 						p = null;
+						statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
 						((Timer)e.getSource()).stop();
 					}
-					
 				}
 			});
 			timer.start();
@@ -218,18 +241,22 @@ public class BefungeMain {
 				originalText = BefungeMain.this.textArea.getText();
 			if (p == null)
 				p = new Parser(BefungeMain.this.textArea.getText());
+			terminated = false;
 			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					p.interpret();
 					p.advance();
+					statusStream.setText("Status: Running. x = "
+								+ (lastX = p.getCurrentX()) + ", y = " + (lastY = p.getCurrentY()));
 					stackStream.setText(p.getInterpreter().getStack().toString());
 					outputStream.setText(p.getOutput());
 					if (p.isUpdateNeeded()) {
 						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
 						p.setUpdateNeeded(false);
 					}
-					if (!p.isRunning()) {
+					if (!p.isRunning() || terminated) {
 						p = null;
+						statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
 						((Timer)e.getSource()).stop();
 					}
 				}
@@ -246,6 +273,7 @@ public class BefungeMain {
 			p = null;
 			textArea.setText(originalText == null ? "" : originalText.trim());
 			originalText = null;
+			terminated = false;
 			stackStream.setText("");
 			outputStream.setText("");
 		}
@@ -265,6 +293,10 @@ public class BefungeMain {
 				p.interpret();
 				p.advance();
 			}
+			if (p.isRunning())
+				statusStream.setText("Status: Running. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
+			else
+				statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
 			stackStream.setText(p.getInterpreter().getStack().toString());
 			outputStream.setText(p.getOutput());
 			if (p.isUpdateNeeded()) {
@@ -359,6 +391,15 @@ public class BefungeMain {
 				BefungeMain.this.frame.setVisible(false);
 				BefungeMain.this.frame.dispose();
 			}
+		}
+
+	}
+	
+	private class TerminateActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			terminated = true;
 		}
 
 	}
