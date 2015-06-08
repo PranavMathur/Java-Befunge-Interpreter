@@ -2,6 +2,7 @@ package befunge;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,9 +28,12 @@ import java.util.Scanner;
 
 public class BefungeMain {
 
+	/** The amount of time in milliseconds between steps when crawling through a program */
 	private static final int CRAWL_STEP_TIME = 333;
+	/** The amount of time in milliseconds between steps when crawling through a program */
 	private static final int WALK_STEP_TIME = 100;
 
+	//Objects used for GUI creation
 	private JFrame frame;
 	private JFrame fileFrame;
 	private JPanel panel;
@@ -56,6 +60,7 @@ public class BefungeMain {
 	private JTextField stackStream;
 	private JTextField outputStream;
 
+	//ActionListeners for buttons and menuItems
 	private RunActionListener runner = new RunActionListener();
 	private WalkActionListener walker = new WalkActionListener();
 	private CrawlActionListener crawler = new CrawlActionListener();
@@ -66,17 +71,25 @@ public class BefungeMain {
 	private CloseActionListener closer = new CloseActionListener();
 	private ResetActionListener resetter = new ResetActionListener();
 	private TerminateActionListener terminator = new TerminateActionListener();
+	private NewActionListener creator = new NewActionListener();
 
-	private Parser p;
+	/** The Parser used to run the program */
+	private Parser parser;
 	
+	/** The file that is currently open */
 	private String currentFile;
+	/** The original text of the current File */
 	private String originalText;
 	
 	private boolean terminated;
 	
+	//The ending position of the Parser's pointer
 	private int lastX;
 	private int lastY;
 
+	/**
+	 * Creates each aspect of the GUI
+	 */
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -94,6 +107,8 @@ public class BefungeMain {
 		inputPanel.setLayout(new FlowLayout());
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
+		newItem = new JMenuItem("New");
+		newItem.addActionListener(creator);
 		importItem = new JMenuItem("Open");
 		importItem.addActionListener(reader);
 		saveItem = new JMenuItem("Save");
@@ -102,6 +117,7 @@ public class BefungeMain {
 		saveAsItem.addActionListener(saveAser);
 		exitItem = new JMenuItem("Exit");
 		exitItem.addActionListener(closer);
+		fileMenu.add(newItem);
 		fileMenu.add(importItem);
 		fileMenu.add(saveItem);
 		fileMenu.add(saveAsItem);
@@ -131,7 +147,7 @@ public class BefungeMain {
 		menuBar.add(stepItem);
 		panel.add(scroller);
 		panel.add(inputPanel);
-		statusStream = new JTextField("");
+		statusStream = new JTextField("Status: Stopped. x = 0, y = 0");
 		statusStream.setFont(new Font("Courier", Font.PLAIN, 12));
 		statusStream.setEditable(false);
 		panel.add(statusStream);
@@ -147,18 +163,63 @@ public class BefungeMain {
 		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setLocationByPlatform(true);
-		frame.setVisible(true);
-		frame.setResizable(true);
 	}
 	
+	/**
+	 * Open's a file using a FileDialog and places the text of the file in the text area
+	 */
+	private void openFile() {
+		FileDialog dialog = new FileDialog(frame, "Open File");
+		dialog.setMode(FileDialog.LOAD);
+		dialog.setMultipleMode(false);
+		dialog.setVisible(true);
+		File[] files = dialog.getFiles();
+		if (files.length == 0)
+			return;
+		String str = dialog.getFiles()[0].getPath();
+		if (str == null)
+			return;
+		BefungeMain.this.currentFile = str;
+
+		Scanner s = null;
+		StringBuilder fileStr = new StringBuilder();
+		
+		try {
+			s = new Scanner(new BufferedReader(new FileReader(str)));
+			while (s.hasNext()) {
+				fileStr.append(s.nextLine());
+				fileStr.append("\n");
+			}
+			BefungeMain.this.textArea.setText(fileStr.toString());
+			originalText = fileStr.toString();
+		}
+		catch (IOException ex) {
+			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
+		}
+		finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		
+	}
+	
+	/**
+	 * Saves the current text of the text area to a file
+	 * If the file has not been saved before, prompts the user for a file using a FileDialog
+	 */
 	private void saveFile() {
 		String str = BefungeMain.this.currentFile;
+		originalText = textArea.getText();
 		if (str == null) {
-			str = (String)JOptionPane.showInputDialog(
-					frame,
-					"Enter a file name:");
-			if (str == null)
+			FileDialog dialog = new FileDialog(frame, "Open File");
+			dialog.setMode(FileDialog.LOAD);
+			dialog.setMultipleMode(false);
+			dialog.setVisible(true);
+			File[] files = dialog.getFiles();
+			if (files.length == 0)
 				return;
+			str = dialog.getFiles()[0].getPath();
 			BefungeMain.this.currentFile = str;
 		}
 		try {
@@ -167,212 +228,84 @@ public class BefungeMain {
 			writer.close();
 		}
 		catch (IOException ex) {
-			System.out.println("Exception");
+			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-
-		BefungeMain GUI = new BefungeMain();
-		
-	}
-
-	private class RunActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (originalText == null)
-				originalText = BefungeMain.this.textArea.getText();
-			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText());
-			terminated = false;
-			while (p.isRunning() && !terminated) {
-				p.interpret();
-				p.advance();
-				lastX = p.getCurrentX();
-				lastY = p.getCurrentY();
-			}
-			statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
-			stackStream.setText(p.getInterpreter().getStack().toString());
-			outputStream.setText(p.getOutput());
-			p = null;
-		}
-
-	}
-
-	private class WalkActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (originalText == null)
-				originalText = BefungeMain.this.textArea.getText();
-			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText());
-			terminated = false;
-			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					p.interpret();
-					p.advance();
-					statusStream.setText("Status: Running. x = "
-								+ (lastX = p.getCurrentX()) + ", y = " + (lastY = p.getCurrentY()));
-					stackStream.setText(p.getInterpreter().getStack().toString());
-					outputStream.setText(p.getOutput());
-					if (p.isUpdateNeeded()) {
-						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
-						p.setUpdateNeeded(false);
-					}
-					if (!p.isRunning() || terminated) {
-						p = null;
-						statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
-						((Timer)e.getSource()).stop();
-					}
-				}
-			});
-			timer.start();
-		}
-
-	}
-
-	private class CrawlActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (originalText == null)
-				originalText = BefungeMain.this.textArea.getText();
-			if (p == null)
-				p = new Parser(BefungeMain.this.textArea.getText());
-			terminated = false;
-			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					p.interpret();
-					p.advance();
-					statusStream.setText("Status: Running. x = "
-								+ (lastX = p.getCurrentX()) + ", y = " + (lastY = p.getCurrentY()));
-					stackStream.setText(p.getInterpreter().getStack().toString());
-					outputStream.setText(p.getOutput());
-					if (p.isUpdateNeeded()) {
-						BefungeMain.this.textArea.setText(p.getRawTokens().trim());
-						p.setUpdateNeeded(false);
-					}
-					if (!p.isRunning() || terminated) {
-						p = null;
-						statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
-						((Timer)e.getSource()).stop();
-					}
-				}
-			});
-			timer.start();
-		}
-
-	}
-	
-	private class ResetActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			p = null;
-			textArea.setText(originalText == null ? "" : originalText.trim());
-			originalText = null;
-			terminated = false;
-			stackStream.setText("");
-			outputStream.setText("");
-		}
-
-	}
-
-	private class StepActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (originalText == null)
-				originalText = BefungeMain.this.textArea.getText();
-			if (p == null) {
-				p = new Parser(BefungeMain.this.textArea.getText());
-			}
-			if (p.isRunning()) {
-				p.interpret();
-				p.advance();
-			}
-			if (p.isRunning())
-				statusStream.setText("Status: Running. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
-			else
-				statusStream.setText("Status: Stopped. x = " + p.getCurrentX() + ", y = " + p.getCurrentY());
-			stackStream.setText(p.getInterpreter().getStack().toString());
-			outputStream.setText(p.getOutput());
-			if (p.isUpdateNeeded()) {
-				BefungeMain.this.textArea.setText(p.getRawTokens().trim());
-				p.setUpdateNeeded(false);
-			}
-		}
-
-	}
-	
+	/**
+	 * ActionListener for the "New" button of the GUI
+	 * @author Pranav
+	 *
+	 */
 	private class NewActionListener implements ActionListener {
-
+	
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
+			int response = 1;
+			if ((originalText == null ^ textArea.getText() == null)
+					|| originalText.trim().equals(textArea.getText().trim()))
+				response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
+			if (response == 0) {
+				BefungeMain.this.saveFile();
+				textArea.setText("");
+				currentFile = null;
+			}
+			else if (response == 1) {
+				textArea.setText("");
+				currentFile = null;
+			}
 		}
-
+	
 	}
-
+	
+	/**
+	 * ActionListener for the "Open" button of the GUI
+	 * @author Pranav
+	 *
+	 */
 	private class FileReaderActionListener implements ActionListener {
-
+	
 		@Override
 		public void actionPerformed(ActionEvent e){
-			String str = (String)JOptionPane.showInputDialog(
-					frame,
-					"Enter a file name:");
-			if (str == null)
-				return;
-			BefungeMain.this.currentFile = str;
-
-			Scanner s = null;
-			StringBuilder fileStr = new StringBuilder();
-			
-			try {
-				s = new Scanner(new BufferedReader(new FileReader(str)));
-				while (s.hasNext()) {
-					fileStr.append(s.nextLine());
-					fileStr.append("\n");
-				}
-				BefungeMain.this.textArea.setText(fileStr.toString());
-				originalText = fileStr.toString();
-			}
-			catch (IOException ex) {
-				System.out.println("Exception");
-			}
-			finally {
-				if (s != null) {
-					s.close();
-				}
-			}
-
+			openFile();
 		}
-
+	
 	}
 	
+	/**
+	 * ActionListener for the "Save" button of the GUI
+	 * @author Pranav
+	 *
+	 */
 	private class SaveActionListener implements ActionListener {
-
+	
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			BefungeMain.this.saveFile();
+			saveFile();
 		}
-
-	}
 	
+	}
+	/**
+	 * ActionListener for the "Save as" button of the GUI
+	 * @author Pranav
+	 *
+	 */
 	private class SaveAsActionListener implements ActionListener {
-
+	
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			BefungeMain.this.currentFile = null;
 			BefungeMain.this.saveFile();
 		}
-
-	}
 	
+	}
+	/**
+	 * ActionListener for the "Exit" button of the GUI
+	 * @author Pranav
+	 *
+	 */
 	private class CloseActionListener implements ActionListener {
-
+	
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if ((originalText == null ^ textArea.getText() == null)
@@ -392,16 +325,178 @@ public class BefungeMain {
 				BefungeMain.this.frame.dispose();
 			}
 		}
+	
+	}
+	/**
+	 * ActionListener for the "Run" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class RunActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			originalText = BefungeMain.this.textArea.getText();
+			if (parser == null)
+				parser = new Parser(BefungeMain.this.textArea.getText());
+			terminated = false;
+			saveFile();
+			while (parser.isRunning() && !terminated) {
+				parser.interpret();
+				parser.advance();
+				lastX = parser.getCurrentX();
+				lastY = parser.getCurrentY();
+			}
+			statusStream.setText("Status: Stopped. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+			stackStream.setText(parser.getInterpreter().getStack().toString());
+			outputStream.setText(parser.getOutput());
+			parser = null;
+		}
 
 	}
-	
-	private class TerminateActionListener implements ActionListener {
+	/**
+	 * ActionListener for the "Walk" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class WalkActionListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			originalText = BefungeMain.this.textArea.getText();
+			if (parser == null)
+				parser = new Parser(BefungeMain.this.textArea.getText());
+			terminated = false;
+			saveFile();
+			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					parser.interpret();
+					parser.advance();
+					statusStream.setText("Status: Running. x = "
+								+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+					stackStream.setText(parser.getInterpreter().getStack().toString());
+					outputStream.setText(parser.getOutput());
+					if (parser.isUpdateNeeded()) {
+						BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+						parser.setUpdateNeeded(false);
+					}
+					if (!parser.isRunning() || terminated) {
+						parser = null;
+						statusStream.setText("Status: Stopped. x = " + lastX + ", y = " + lastY);
+						((Timer)e.getSource()).stop();
+					}
+				}
+			});
+			timer.start();
+		}
+
+	}
+	/**
+	 * ActionListener for the "Crawl" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class CrawlActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			originalText = BefungeMain.this.textArea.getText();
+			if (parser == null)
+				parser = new Parser(BefungeMain.this.textArea.getText());
+			terminated = false;
+			saveFile();
+			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					parser.interpret();
+					parser.advance();
+					statusStream.setText("Status: Running. x = "
+								+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+					stackStream.setText(parser.getInterpreter().getStack().toString());
+					outputStream.setText(parser.getOutput());
+					if (parser.isUpdateNeeded()) {
+						BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+						parser.setUpdateNeeded(false);
+					}
+					if (!parser.isRunning() || terminated) {
+						parser = null;
+						statusStream.setText("Status: Stopped. x = " + lastX + ", y = " + lastY);
+						((Timer)e.getSource()).stop();
+					}
+				}
+			});
+			timer.start();
+		}
+
+	}
+	/**
+	 * ActionListener for the "Terminate" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class TerminateActionListener implements ActionListener {
+	
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			terminated = true;
 		}
+	
+	}
+	/**
+	 * ActionListener for the "Reset" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class ResetActionListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			parser = null;
+			if (originalText != null)
+				textArea.setText(originalText.trim());
+			originalText = null;
+			terminated = false;
+			statusStream.setText("Status: Stopped. x = 0, y = 0");
+			stackStream.setText("");
+			outputStream.setText("");
+		}
+
+	}
+	/**
+	 * ActionListener for the "Step" button of the GUI
+	 * @author Pranav
+	 *
+	 */
+	private class StepActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (originalText == null)
+				originalText = BefungeMain.this.textArea.getText();
+			if (parser == null) {
+				parser = new Parser(BefungeMain.this.textArea.getText());
+			}
+			if (parser.isRunning()) {
+				parser.interpret();
+				parser.advance();
+			}
+			if (parser.isRunning())
+				statusStream.setText("Status: Running. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+			else
+				statusStream.setText("Status: Stopped. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+			stackStream.setText(parser.getInterpreter().getStack().toString());
+			outputStream.setText(parser.getOutput());
+			if (parser.isUpdateNeeded()) {
+				BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+				parser.setUpdateNeeded(false);
+			}
+		}
+
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BefungeMain GUI = new BefungeMain();
+		GUI.frame.setVisible(true);
+		GUI.frame.setResizable(true);
 	}
 
 }
