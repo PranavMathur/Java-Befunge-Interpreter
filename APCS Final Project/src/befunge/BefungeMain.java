@@ -1,7 +1,6 @@
 package befunge;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,9 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -26,25 +25,25 @@ import javax.swing.Timer;
 import java.io.*;
 import java.util.Scanner;
 
-public class BefungeMain {
+public class BefungeMain extends JApplet implements ActionListener {
+	
+	static final long serialVersionUID = 0l;
 
 	/** The amount of time in milliseconds between steps when crawling through a program */
 	private static final int CRAWL_STEP_TIME = 333;
-	/** The amount of time in milliseconds between steps when crawling through a program */
+	/** The amount of time in milliseconds between steps when walking through a program */
 	private static final int WALK_STEP_TIME = 100;
 
 	//Objects used for GUI creation
 	private JFrame frame;
-	private JFrame fileFrame;
 	private JPanel panel;
 	private JTextArea textArea;
 	private JScrollPane scroller;
-	private JScrollPane stackScroller;
-	private JScrollPane outputScroller;
 	private JPanel inputPanel;
 	private JMenuBar menuBar;
 	private JMenu fileMenu;
 	private JMenu runMenu;
+	private JMenu helpMenu;
 	private JMenuItem newItem;
 	private JMenuItem importItem;
 	private JMenuItem saveItem;
@@ -60,29 +59,16 @@ public class BefungeMain {
 	private JTextField stackStream;
 	private JTextField outputStream;
 
-	//ActionListeners for buttons and menuItems
-	private RunActionListener runner = new RunActionListener();
-	private WalkActionListener walker = new WalkActionListener();
-	private CrawlActionListener crawler = new CrawlActionListener();
-	private StepActionListener stepper = new StepActionListener();
-	private FileReaderActionListener reader = new FileReaderActionListener();
-	private SaveActionListener saver = new SaveActionListener();
-	private SaveAsActionListener saveAser = new SaveAsActionListener();
-	private CloseActionListener closer = new CloseActionListener();
-	private ResetActionListener resetter = new ResetActionListener();
-	private TerminateActionListener terminator = new TerminateActionListener();
-	private NewActionListener creator = new NewActionListener();
-
 	/** The Parser used to run the program */
 	private Parser parser;
-	
+
 	/** The file that is currently open */
 	private String currentFile;
 	/** The original text of the current File */
 	private String originalText;
-	
+
 	private boolean terminated;
-	
+
 	//The ending position of the Parser's pointer
 	private int lastX;
 	private int lastY;
@@ -108,15 +94,15 @@ public class BefungeMain {
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
 		newItem = new JMenuItem("New");
-		newItem.addActionListener(creator);
+		newItem.addActionListener(this);
 		importItem = new JMenuItem("Open");
-		importItem.addActionListener(reader);
+		importItem.addActionListener(this);
 		saveItem = new JMenuItem("Save");
-		saveItem.addActionListener(saver);
+		saveItem.addActionListener(this);
 		saveAsItem = new JMenuItem("Save As");
-		saveAsItem.addActionListener(saveAser);
+		saveAsItem.addActionListener(this);
 		exitItem = new JMenuItem("Exit");
-		exitItem.addActionListener(closer);
+		exitItem.addActionListener(this);
 		fileMenu.add(newItem);
 		fileMenu.add(importItem);
 		fileMenu.add(saveItem);
@@ -126,15 +112,15 @@ public class BefungeMain {
 		menuBar.add(fileMenu);
 		runMenu = new JMenu("Run");
 		runItem = new JMenuItem("Run");
-		runItem.addActionListener(runner);
+		runItem.addActionListener(this);
 		walkItem = new JMenuItem("Walk");
-		walkItem.addActionListener(walker);
+		walkItem.addActionListener(this);
 		crawlItem = new JMenuItem("Crawl");
-		crawlItem.addActionListener(crawler);
+		crawlItem.addActionListener(this);
 		resetItem = new JMenuItem("Reset");
-		resetItem.addActionListener(resetter);
+		resetItem.addActionListener(this);
 		terminateItem = new JMenuItem("Terminate");
-		terminateItem.addActionListener(terminator);
+		terminateItem.addActionListener(this);
 		runMenu.add(runItem);
 		runMenu.add(walkItem);
 		runMenu.add(crawlItem);
@@ -142,8 +128,10 @@ public class BefungeMain {
 		runMenu.add(terminateItem);
 		runMenu.add(resetItem);
 		menuBar.add(runMenu);
+		helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
 		stepItem = new JButton("Step");
-		stepItem.addActionListener(stepper);
+		stepItem.addActionListener(this);
 		menuBar.add(stepItem);
 		panel.add(scroller);
 		panel.add(inputPanel);
@@ -164,9 +152,9 @@ public class BefungeMain {
 		frame.pack();
 		frame.setLocationByPlatform(true);
 	}
-	
+
 	/**
-	 * Open's a file using a FileDialog and places the text of the file in the text area
+	 * Opens a file using a FileDialog and places the text of the file in the text area
 	 */
 	private void openFile() {
 		FileDialog dialog = new FileDialog(frame, "Open File");
@@ -179,18 +167,18 @@ public class BefungeMain {
 		String str = dialog.getFiles()[0].getPath();
 		if (str == null)
 			return;
-		BefungeMain.this.currentFile = str;
+		currentFile = str;
 
 		Scanner s = null;
 		StringBuilder fileStr = new StringBuilder();
-		
+
 		try {
 			s = new Scanner(new BufferedReader(new FileReader(str)));
 			while (s.hasNext()) {
 				fileStr.append(s.nextLine());
 				fileStr.append("\n");
 			}
-			BefungeMain.this.textArea.setText(fileStr.toString());
+			textArea.setText(fileStr.toString());
 			originalText = fileStr.toString();
 		}
 		catch (IOException ex) {
@@ -201,15 +189,15 @@ public class BefungeMain {
 				s.close();
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Saves the current text of the text area to a file
 	 * If the file has not been saved before, prompts the user for a file using a FileDialog
 	 */
 	private void saveFile() {
-		String str = BefungeMain.this.currentFile;
+		String str = currentFile;
 		originalText = textArea.getText();
 		if (str == null) {
 			FileDialog dialog = new FileDialog(frame, "Open File");
@@ -220,11 +208,11 @@ public class BefungeMain {
 			if (files.length == 0)
 				return;
 			str = dialog.getFiles()[0].getPath();
-			BefungeMain.this.currentFile = str;
+			currentFile = str;
 		}
 		try {
 			PrintWriter writer = new PrintWriter(str, "UTF-8");
-			writer.print(BefungeMain.this.textArea.getText());
+			writer.print(textArea.getText());
 			writer.close();
 		}
 		catch (IOException ex) {
@@ -233,20 +221,17 @@ public class BefungeMain {
 	}
 
 	/**
-	 * ActionListener for the "New" button of the GUI
-	 * @author Pranav
-	 *
+	 * Action Listeners for each JMenuItem and JButton
+	 * Runs a different block of code for each menu item/button
 	 */
-	private class NewActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(newItem)) {
 			int response = 1;
 			if ((originalText == null ^ textArea.getText() == null)
 					|| originalText.trim().equals(textArea.getText().trim()))
-				response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
+				response = JOptionPane.showConfirmDialog(frame, "Do you want to save your work?");
 			if (response == 0) {
-				BefungeMain.this.saveFile();
+				saveFile();
 				textArea.setText("");
 				currentFile = null;
 			}
@@ -255,90 +240,38 @@ public class BefungeMain {
 				currentFile = null;
 			}
 		}
-	
-	}
-	
-	/**
-	 * ActionListener for the "Open" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class FileReaderActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e){
+		else if (e.getSource().equals(importItem)) {
 			openFile();
 		}
-	
-	}
-	
-	/**
-	 * ActionListener for the "Save" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class SaveActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		else if (e.getSource().equals(saveItem)) {
 			saveFile();
 		}
-	
-	}
-	/**
-	 * ActionListener for the "Save as" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class SaveAsActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			BefungeMain.this.currentFile = null;
-			BefungeMain.this.saveFile();
+		else if (e.getSource().equals(saveAsItem)) {
+			currentFile = null;
+			saveFile();
 		}
-	
-	}
-	/**
-	 * ActionListener for the "Exit" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class CloseActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		else if (e.getSource().equals(exitItem)) {
 			if ((originalText == null ^ textArea.getText() == null)
-						|| originalText.trim().equals(textArea.getText().trim())) {
-				BefungeMain.this.frame.setVisible(false);
-				BefungeMain.this.frame.dispose();
+					|| originalText.trim().equals(textArea.getText().trim())) {
+				frame.setVisible(false);
+				frame.dispose();
 				return;
 			}
-			int response = JOptionPane.showConfirmDialog(BefungeMain.this.frame, "Do you want to save your work?");
+			int response = JOptionPane.showConfirmDialog(frame, "Do you want to save your work?");
 			if (response == 0) {
-				BefungeMain.this.saveFile();
-				BefungeMain.this.frame.setVisible(false);
-				BefungeMain.this.frame.dispose();
+				saveFile();
+				frame.setVisible(false);
+				frame.dispose();
 			}
 			else if (response == 1) {
-				BefungeMain.this.frame.setVisible(false);
-				BefungeMain.this.frame.dispose();
+				frame.setVisible(false);
+				frame.dispose();
 			}
 		}
-	
-	}
-	/**
-	 * ActionListener for the "Run" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class RunActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			originalText = BefungeMain.this.textArea.getText();
+		else if (e.getSource().equals(runItem)) {
+			originalText = textArea.getText();
 			if (parser == null)
-				parser = new Parser(BefungeMain.this.textArea.getText());
+				parser = new Parser(textArea.getText());
 			terminated = false;
 			saveFile();
 			while (parser.isRunning() && !terminated) {
@@ -352,20 +285,10 @@ public class BefungeMain {
 			outputStream.setText(parser.getOutput());
 			parser = null;
 		}
-
-	}
-	/**
-	 * ActionListener for the "Walk" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class WalkActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			originalText = BefungeMain.this.textArea.getText();
+		else if (e.getSource().equals(walkItem)) {
+			originalText = textArea.getText();
 			if (parser == null)
-				parser = new Parser(BefungeMain.this.textArea.getText());
+				parser = new Parser(textArea.getText());
 			terminated = false;
 			saveFile();
 			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
@@ -373,11 +296,11 @@ public class BefungeMain {
 					parser.interpret();
 					parser.advance();
 					statusStream.setText("Status: Running. x = "
-								+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+							+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
 					stackStream.setText(parser.getInterpreter().getStack().toString());
 					outputStream.setText(parser.getOutput());
 					if (parser.isUpdateNeeded()) {
-						BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+						textArea.setText(parser.getRawTokens().trim());
 						parser.setUpdateNeeded(false);
 					}
 					if (!parser.isRunning() || terminated) {
@@ -389,20 +312,10 @@ public class BefungeMain {
 			});
 			timer.start();
 		}
-
-	}
-	/**
-	 * ActionListener for the "Crawl" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class CrawlActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			originalText = BefungeMain.this.textArea.getText();
+		else if (e.getSource().equals(crawlItem)) {
+			originalText = textArea.getText();
 			if (parser == null)
-				parser = new Parser(BefungeMain.this.textArea.getText());
+				parser = new Parser(textArea.getText());
 			terminated = false;
 			saveFile();
 			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
@@ -410,11 +323,11 @@ public class BefungeMain {
 					parser.interpret();
 					parser.advance();
 					statusStream.setText("Status: Running. x = "
-								+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+							+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
 					stackStream.setText(parser.getInterpreter().getStack().toString());
 					outputStream.setText(parser.getOutput());
 					if (parser.isUpdateNeeded()) {
-						BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+						textArea.setText(parser.getRawTokens().trim());
 						parser.setUpdateNeeded(false);
 					}
 					if (!parser.isRunning() || terminated) {
@@ -426,30 +339,10 @@ public class BefungeMain {
 			});
 			timer.start();
 		}
-
-	}
-	/**
-	 * ActionListener for the "Terminate" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class TerminateActionListener implements ActionListener {
-	
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		else if (e.getSource().equals(terminateItem)) {
 			terminated = true;
 		}
-	
-	}
-	/**
-	 * ActionListener for the "Reset" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class ResetActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		else if (e.getSource().equals(resetItem)) {
 			parser = null;
 			if (originalText != null)
 				textArea.setText(originalText.trim());
@@ -459,21 +352,11 @@ public class BefungeMain {
 			stackStream.setText("");
 			outputStream.setText("");
 		}
-
-	}
-	/**
-	 * ActionListener for the "Step" button of the GUI
-	 * @author Pranav
-	 *
-	 */
-	private class StepActionListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
+		else if (e.getSource().equals(stepItem)) {
 			if (originalText == null)
-				originalText = BefungeMain.this.textArea.getText();
+				originalText = textArea.getText();
 			if (parser == null) {
-				parser = new Parser(BefungeMain.this.textArea.getText());
+				parser = new Parser(textArea.getText());
 			}
 			if (parser.isRunning()) {
 				parser.interpret();
@@ -486,13 +369,12 @@ public class BefungeMain {
 			stackStream.setText(parser.getInterpreter().getStack().toString());
 			outputStream.setText(parser.getOutput());
 			if (parser.isUpdateNeeded()) {
-				BefungeMain.this.textArea.setText(parser.getRawTokens().trim());
+				textArea.setText(parser.getRawTokens().trim());
 				parser.setUpdateNeeded(false);
 			}
 		}
-
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		BefungeMain GUI = new BefungeMain();
 		GUI.frame.setVisible(true);
