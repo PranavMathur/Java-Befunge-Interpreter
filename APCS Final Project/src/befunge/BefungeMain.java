@@ -70,8 +70,8 @@ public class BefungeMain extends JApplet implements ActionListener {
 	private boolean terminated;
 
 	//The ending position of the Parser's pointer
-	private int lastX;
-	private int lastY;
+	private int lastX = 0;
+	private int lastY = 0;
 
 	/**
 	 * Creates each aspect of the GUI
@@ -276,11 +276,11 @@ public class BefungeMain extends JApplet implements ActionListener {
 			saveFile();
 			while (parser.isRunning() && !terminated) {
 				parser.interpret();
-				parser.advance();
 				lastX = parser.getCurrentX();
 				lastY = parser.getCurrentY();
+				parser.advance();
 			}
-			statusStream.setText("Status: Stopped. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+			statusStream.setText("Status: Stopped. x = " + lastX + ", y = " + lastY);
 			stackStream.setText(parser.getInterpreter().getStack().toString());
 			outputStream.setText(parser.getOutput());
 			parser = null;
@@ -294,9 +294,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 			Timer timer = new Timer(WALK_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					parser.interpret();
+					lastX = parser.getCurrentX();
+					lastY = parser.getCurrentY();
 					parser.advance();
-					statusStream.setText("Status: Running. x = "
-							+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+					statusStream.setText("Status: Running. x = " + lastX + ", y = " + lastY);
 					stackStream.setText(parser.getInterpreter().getStack().toString());
 					outputStream.setText(parser.getOutput());
 					if (parser.isUpdateNeeded()) {
@@ -321,9 +322,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 			Timer timer = new Timer(CRAWL_STEP_TIME, new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					parser.interpret();
+					lastX = parser.getCurrentX();
+					lastY = parser.getCurrentY();
 					parser.advance();
-					statusStream.setText("Status: Running. x = "
-							+ (lastX = parser.getCurrentX()) + ", y = " + (lastY = parser.getCurrentY()));
+					statusStream.setText("Status: Running. x = " + lastX + ", y = " + lastY);
 					stackStream.setText(parser.getInterpreter().getStack().toString());
 					outputStream.setText(parser.getOutput());
 					if (parser.isUpdateNeeded()) {
@@ -360,16 +362,18 @@ public class BefungeMain extends JApplet implements ActionListener {
 			}
 			if (parser.isRunning()) {
 				parser.interpret();
+				lastX = parser.getCurrentX();
+				lastY = parser.getCurrentY();
 				parser.advance();
 			}
 			if (parser.isRunning())
-				statusStream.setText("Status: Running. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+				statusStream.setText("Status: Running. x = " + lastX + ", y = " + lastY);
 			else
-				statusStream.setText("Status: Stopped. x = " + parser.getCurrentX() + ", y = " + parser.getCurrentY());
+				statusStream.setText("Status: Stopped. x = " + lastX + ", y = " + lastY);
 			stackStream.setText(parser.getInterpreter().getStack().toString());
 			outputStream.setText(parser.getOutput());
 			if (parser.isUpdateNeeded()) {
-				textArea.setText(parser.getRawTokens().trim());
+				textArea.setText(parser.getRawTokens());
 				parser.setUpdateNeeded(false);
 			}
 		}
