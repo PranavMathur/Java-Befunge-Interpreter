@@ -4,7 +4,7 @@ import javax.swing.JOptionPane;
 
 /**
  * Interacts with tokens, the stack, and the output
- * @author Pranav
+ * @author Pranav Mathur
  *
  */
 public class Parser {
@@ -32,13 +32,13 @@ public class Parser {
 	private StringBuilder output = new StringBuilder();
 
 	/** Interpreter that manipulates the stack */
-	private Interpreter iptr = new Interpreter();
+	private Interpreter interpreter = new Interpreter();
 	
 	/**
 	 * @return The interpreter of this parser
 	 */
 	public Interpreter getInterpreter() {
-		return iptr;
+		return interpreter;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class Parser {
 	 * @param iptr The new Interpreter to be added to this
 	 */
 	public void setInterpreter(Interpreter iptr) {
-		this.iptr = iptr;
+		this.interpreter = iptr;
 	}
 	
 	/**
@@ -164,34 +164,34 @@ public class Parser {
 		if (currentToken == null) //does nothing if the token is null
 			return;
 		if ("0123456789".indexOf(currentToken) != -1) { //pushes the integer representation of the token to the stack
-			iptr.push(Integer.parseInt(currentToken));
+			interpreter.push(Integer.parseInt(currentToken));
 			return;
 		}
 		else if ("abcdef".indexOf(currentToken) != -1) { //pushes the integer representation of the token to the stack
-			iptr.push(10 + (int)(currentToken.charAt(0)) - 97);
+			interpreter.push(10 + (int)(currentToken.charAt(0)) - 97);
 			return;
 		}
 		switch (currentToken) { //performs the correct operation based on the current token
 			case "+": //performs the addition operation of the interpreter
-				iptr.add();
+				interpreter.add();
 				break;
 			case "-": //performs the subtraction operation of the interpreter
-				iptr.subtract();
+				interpreter.subtract();
 				break;
 			case "*": //performs the multiplication operation of the interpreter
-				iptr.multiply();
+				interpreter.multiply();
 				break;
 			case "/": //performs the division operation of the interpreter
-				iptr.divide();
+				interpreter.divide();
 				break;
 			case "%": //performs the modulus operation of the interpreter
-				iptr.modulo();
+				interpreter.modulo();
 				break;
 			case "!": //performs the logical not operation of the interpreter
-				iptr.NOT();
+				interpreter.NOT();
 				break;
 			case "`": //performs the greater than operation of the interpreter
-				iptr.greaterThan();
+				interpreter.greaterThan();
 				break;
 			case ">": //sets the current direction of the pointer to right
 				currentDir = CardinalDirections.RIGHT;
@@ -216,8 +216,8 @@ public class Parser {
 				currentDir = newDirection(1);
 				break;
 			case "x": //moves the pointer to the location at <x, y> where x and y are popped from the stack
-				int newY = iptr.pop();
-				int newX = iptr.pop();
+				int newY = interpreter.pop();
+				int newX = interpreter.pop();
 				setCurrentX(newX);
 				setCurrentY(newY);
 				currentDir = newDirection(2);
@@ -225,7 +225,7 @@ public class Parser {
 				currentDir = newDirection(2);
 				break;
 			case "_": //sets the current direction of the pointer to right if the top element of the stack is 0, left otherwise
-				if (iptr.pop() == 0) {
+				if (interpreter.pop() == 0) {
 					currentDir = CardinalDirections.RIGHT;
 				}
 				else {
@@ -233,7 +233,7 @@ public class Parser {
 				}
 				break;
 			case "|": //sets the current direction of the pointer to down if the top element of the stack is 0, up otherwise
-				if (iptr.pop() == 0) {
+				if (interpreter.pop() == 0) {
 					currentDir = CardinalDirections.DOWN;
 				}
 				else {
@@ -242,8 +242,8 @@ public class Parser {
 				break;
 			case "w": //performs a clockwise rotation of the pointer if the second element of the stack is larger than the first,
 				      //counter-clockwise if otherwise
-				int b = iptr.pop();
-				int a = iptr.pop();
+				int b = interpreter.pop();
+				int a = interpreter.pop();
 				if (a < b) {
 					currentDir = newDirection(-1);
 				}
@@ -255,49 +255,49 @@ public class Parser {
 				interpretString();
 				break;
 			case ":": //duplicates the value on the top of the stack
-				iptr.duplicate();
+				interpreter.duplicate();
 				break;
 			case "\\": //swaps the values on the top of the stack
-				iptr.swap();
+				interpreter.swap();
 				break;
 			case "$": //disposes of the top value of the stack
-				iptr.pop();
+				interpreter.pop();
 				break;
 			case "n": //clears the stack
-				while (!iptr.getStack().isEmpty()) {
-					iptr.pop();
+				while (!interpreter.getStack().isEmpty()) {
+					interpreter.pop();
 				}
 				break;
 			case ".": //outputs the top element of the stack as an integer
-				pushOutput(iptr.pop() + " ");
+				pushOutput(interpreter.pop() + " ");
 				break;
 			case ",": //outputs the top element of the stack as an ASCII character
-				pushOutput(Character.toString((char)iptr.pop()));
+				pushOutput(Character.toString((char)interpreter.pop()));
 				break;
 			case "#": //skips the next character
 				jump(1);
 				break;
 			case "p": //puts a value in the playfield
-				put(iptr.pop(), iptr.pop(), iptr.pop());
+				put(interpreter.pop(), interpreter.pop(), interpreter.pop());
 				updateNeeded = true;
 				break;
 			case "g": //retrieves a value from the playfield
-				iptr.push(get(iptr.pop(), iptr.pop()));
+				interpreter.push(get(interpreter.pop(), interpreter.pop()));
 				break;
 			case "&": //pushes user input the the stack as an integer
-				iptr.push(Integer.parseInt(prompt(false)));
+				interpreter.push(Integer.parseInt(prompt(false)));
 				break;
 			case "~": //pushes user input the the stack as an ASCII character
-				iptr.push((int)(prompt(true).charAt(0)));
+				interpreter.push((int)(prompt(true).charAt(0)));
 				break;
 			case ";": //jumps over all tokens until the next semicolon
 				jumpOver();
 				break;
 			case "j": //jumps i tokens, where i is the top element of the stack
-				jump(iptr.pop());
+				jump(interpreter.pop());
 				break;
 			case "k": // interprets the next token n times, where n is the top element of the stack
-				int n = iptr.pop();
+				int n = interpreter.pop();
 				advance();
 				for (int i = 0; i < n; i++) {
 					interpret();
@@ -387,7 +387,7 @@ public class Parser {
 		advance();
 		String currentToken = getToken(currentX, currentY);
 		while (!currentToken.equals("\"")) {
-			iptr.push((int)(currentToken.charAt(0)));
+			interpreter.push((int)(currentToken.charAt(0)));
 			advance();
 			currentToken = getToken(currentX, currentY);
 		}
@@ -415,7 +415,7 @@ public class Parser {
 	public void resetParser() {
 		currentX = 0;
 		currentY = 0;
-		iptr = new Interpreter();
+		interpreter = new Interpreter();
 	}
 	
 	/**
