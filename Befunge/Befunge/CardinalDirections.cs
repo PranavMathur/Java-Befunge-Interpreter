@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Befunge
-{
-	public enum CardinalDirections
-	{
+namespace Befunge {
+	public enum CardinalDirections {
 		RIGHT,
 		DOWN,
 		LEFT,
