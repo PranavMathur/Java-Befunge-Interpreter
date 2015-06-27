@@ -1,0 +1,18 @@
+E:\Visual Studio 2013\Befunge\Befunge\bin\Release\Befunge.exe.config
+E:\Visual Studio 2013\Befunge\Befunge\bin\Release\Befunge.exe
+E:\Visual Studio 2013\Befunge\Befunge\bin\Release\Befunge.pdb
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.Properties.Resources.resources
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.csproj.GenerateResource.Cache
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.exe
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.pdb
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.csprojResolveAssemblyReference.cache
+E:\Visual Studio 2013\Befunge\Befunge\obj\Release\Befunge.Form1.resources
+E:\GitHub\Befunge\Befunge\Befunge\bin\Release\Befunge.exe.config
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.exe
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.pdb
+E:\GitHub\Befunge\Befunge\Befunge\bin\Release\Befunge.exe
+E:\GitHub\Befunge\Befunge\Befunge\bin\Release\Befunge.pdb
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.csprojResolveAssemblyReference.cache
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.Form1.resources
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.Properties.Resources.resources
+E:\GitHub\Befunge\Befunge\Befunge\obj\Release\Befunge.csproj.GenerateResource.Cache
