@@ -9,87 +9,87 @@ namespace Befunge {
 			stack = new Stack();
 		}
 
-		public Stack getStack() {
+		public Stack GetStack() {
 			return stack;
 		}
 
-		public void setStack(Stack stack) {
+		public void SetStack(Stack stack) {
 			this.stack = stack;
 		}
 
-		public void push(int n) {
-			stack.push(n);
+		public void Push(int n) {
+			stack.Push(n);
 		}
 
-		public int pop() {
-			if (stack.isEmpty())
+		public int Pop() {
+			if (stack.IsEmpty())
 				return 0;
-			return stack.pop();
+			return stack.Pop();
 		}
 
-		public int peek() {
-			return stack.peek();
+		public int Peek() {
+			return stack.Peek();
 		}
 
-		public void add() {
-			int a = pop();
-			int b = pop();
-			push(a + b);
+		public void Add() {
+			int a = Pop();
+			int b = Pop();
+			Push(a + b);
 		}
 
-		public void subtract() {
-			int a = pop();
-			int b = pop();
-			push(b - a);
+		public void Subtract() {
+			int a = Pop();
+			int b = Pop();
+			Push(b - a);
 		}
 
-		public void multiply() {
-			int a = pop();
-			int b = pop();
-			push(a * b);
+		public void Multiply() {
+			int a = Pop();
+			int b = Pop();
+			Push(a * b);
 		}
 
-		public void divide() {
-			int a = pop();
-			int b = pop();
-			push((int)(b / a));
+		public void Divide() {
+			int a = Pop();
+			int b = Pop();
+			Push((int)(b / a));
 		}
 
-		public void modulo() {
-			int a = pop();
-			int b = pop();
-			push(b % a);
+		public void Modulo() {
+			int a = Pop();
+			int b = Pop();
+			Push(b % a);
 		}
 
 		public void NOT() {
-			if (pop() == 0) {
-				push(1);
+			if (Pop() == 0) {
+				Push(1);
 			}
 			else {
-				push(0);
+				Push(0);
 			}
 		}
 
-		public void greaterThan() {
-			int a = pop();
-			int b = pop();
+		public void GreaterThan() {
+			int a = Pop();
+			int b = Pop();
 			if (b > a) {
-				push(1);
+				Push(1);
 			}
 			else {
-				push(0);
+				Push(0);
 			}
 		}
 
-		public void duplicate() {
-			push(peek());
+		public void Duplicate() {
+			Push(Peek());
 		}
 
-		public void swap() {
-			int a = pop();
-			int b = pop();
-			push(a);
-			push(b);
+		public void Swap() {
+			int a = Pop();
+			int b = Pop();
+			Push(a);
+			Push(b);
 		}
 
 	}

@@ -13,7 +13,7 @@ namespace Befunge
 			top = null;
 		}
 
-		public void push(int i)
+		public void Push(int i)
 		{
 			StackElement element = new StackElement(i);
 			if (top == null)
@@ -27,31 +27,31 @@ namespace Befunge
 			}
 		}
 
-		public int peek()
+		public int Peek()
 		{
-			if (isEmpty())
+			if (IsEmpty())
 				return 0;
 			return top.Data;
 		}
 
-		public int pop()
+		public int Pop()
 		{
 			StackElement ret = top;
 			top = top.Next;
 			return ret.Data;
 		}
 
-		public StackElement getTop()
+		public StackElement GetTop()
 		{
 			return top;
 		}
 
-		public void setTop(StackElement top)
+		public void SetTop(StackElement top)
 		{
 			this.top = top;
 		}
 
-		public bool isEmpty()
+		public bool IsEmpty()
 		{
 			return top == null;
 		}
