@@ -8,18 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Befunge
-{
-	public partial class Form1 : Form
-	{
-		public Form1()
-		{
+namespace Befunge {
+	public partial class GUI : Form {
+		public GUI() {
 			InitializeComponent();
 		}
 
-		private void retrieveInput_Click(object sender, EventArgs e)
-		{
-			MessageBox.Show(this.inputText.Text);
+		private void newToolStripMenuItem_Click(object sender, EventArgs e) {
+
 		}
 	}
 }

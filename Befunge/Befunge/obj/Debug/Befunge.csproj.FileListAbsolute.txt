@@ -12,6 +12,6 @@ E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.pdb
 E:\GitHub\Befunge\Befunge\Befunge\bin\Debug\Befunge.exe
 E:\GitHub\Befunge\Befunge\Befunge\bin\Debug\Befunge.pdb
 E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.csprojResolveAssemblyReference.cache
-E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.Form1.resources
 E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.Properties.Resources.resources
 E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.csproj.GenerateResource.Cache
+E:\GitHub\Befunge\Befunge\Befunge\obj\Debug\Befunge.GUI.resources
