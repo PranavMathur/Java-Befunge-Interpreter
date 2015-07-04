@@ -15,5 +15,6 @@ namespace Befunge {
 		static void Main() {
 			Application.Run(new GUI());
 		}
+
 	}
 }

@@ -7,14 +7,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Befunge {
 	public partial class GUI : Form {
 
-		Parser p = null;
+		Parser p;
+
+		private string currentFile;
+		private string originalText;
 
 		public GUI() {
 			InitializeComponent();
+		}
+
+		private void OpenFile() {
+			OpenFileDialog dialog = new OpenFileDialog();
+			dialog.Filter = "bf files (*.bf)|*.bf|All files (*.*)|*.*";
+			dialog.FilterIndex = 0;
+			dialog.RestoreDirectory = false;
+
+			if (dialog.ShowDialog() == DialogResult.OK) {
+				try {
+					string fileStr = dialog.FileName;
+					currentFile = fileStr;
+					using (StreamReader sr = new StreamReader(fileStr)) {
+						inputArea.Text = sr.ReadToEnd().TrimEnd();
+						originalText = inputArea.Text;
+					}
+				}
+				catch (Exception ex) {
+					Console.WriteLine("Error: Could not read file from disk. Original error: " + ex.Message);
+				}
+			}
+		}
+
+		private void SaveFile() {
+			string fileStr = currentFile;
+			originalText = inputArea.Text;
+			if (fileStr == null) {
+				SaveFileDialog dialog = new SaveFileDialog();
+				dialog.Filter = "bf files (*.bf)|*.bf|All files (*.*)|*.*";
+				dialog.FilterIndex = 0;
+				dialog.RestoreDirectory = false;
+
+				if (dialog.ShowDialog() == DialogResult.OK) {
+					fileStr = dialog.FileName;
+					currentFile = fileStr;
+				}
+			}
+			try {
+				using (StreamWriter sr = new StreamWriter(fileStr)) {
+					sr.WriteLine(inputArea.Text);
+				}
+			}
+			catch (Exception ex) {
+				Console.WriteLine("Error: Could not write file to disk. Original error: " + ex.Message);
+			}
 		}
 
 		private void RunHandler(object sender, EventArgs e) {
@@ -39,6 +88,14 @@ namespace Befunge {
 			outputStream.Text = p.GetOutput();
 			if (!p.IsRunning())
 				p = null;
+		}
+
+		private void OpenHandler(object sender, EventArgs e) {
+			OpenFile();
+		}
+
+		private void SaveHandler(object sender, EventArgs e) {
+			SaveFile();
 		}
 	}
 }
