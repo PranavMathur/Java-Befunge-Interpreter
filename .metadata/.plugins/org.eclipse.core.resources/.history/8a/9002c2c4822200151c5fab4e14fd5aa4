@@ -88,6 +88,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//		ImageIcon icon = new ImageIcon(
+//				getClass().getClassLoader().getResource("befunge\\bf.png"));
+//		if (icon != null)
+//			frame.setIconImage(icon.getImage());	
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		URL url = getClass().getResource("bf.png");
 		Image img = tk.createImage(url);
@@ -100,6 +104,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		textArea.setWrapStyleWord(true);
 		textArea.setEditable(true);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 12));
+		textArea.setText("Test3");
 		scroller = new JScrollPane(textArea);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

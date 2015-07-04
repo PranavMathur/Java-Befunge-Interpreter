@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -88,8 +89,12 @@ public class BefungeMain extends JApplet implements ActionListener {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//		ImageIcon icon = new ImageIcon(
+//				getClass().getClassLoader().getResource("befunge\\bf.png"));
+//		if (icon != null)
+//			frame.setIconImage(icon.getImage());	
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		URL url = getClass().getResource("bf.png");
+		URL url = getClass().getResource("befunge\\bf.png");
 		Image img = tk.createImage(url);
 		tk.prepareImage(img, -1, -1, null);
 		frame.setIconImage(img);
@@ -100,6 +105,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		textArea.setWrapStyleWord(true);
 		textArea.setEditable(true);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 12));
+		textArea.setText("Test2");
 		scroller = new JScrollPane(textArea);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

@@ -21,6 +21,10 @@ namespace Befunge {
 			InitializeComponent();
 		}
 
+		private void NewHandler(object sender, EventArgs e) {
+
+		}
+
 		private void OpenHandler(object sender, EventArgs e) {
 			OpenFile();
 		}
@@ -102,5 +106,6 @@ namespace Befunge {
 				Console.WriteLine("Error: Could not write file to disk. Original error: " + ex.Message);
 			}
 		}
+
 	}
 }
