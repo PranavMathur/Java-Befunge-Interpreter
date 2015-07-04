@@ -21,6 +21,43 @@ namespace Befunge {
 			InitializeComponent();
 		}
 
+		private void OpenHandler(object sender, EventArgs e) {
+			OpenFile();
+		}
+
+		private void SaveHandler(object sender, EventArgs e) {
+			SaveFile();
+		}
+
+		private void SaveAsHandler(object sender, EventArgs e) {
+			currentFile = null;
+			SaveFile();
+		}
+
+		private void RunHandler(object sender, EventArgs e) {
+			if (p == null)
+				p = new Parser(inputArea.Text);
+			while (p.IsRunning()) {
+				p.Interpret();
+				p.Advance();
+			}
+			outputStream.Text = p.GetOutput();
+			p = null;
+		}
+
+		private void StepHandler(object sender, EventArgs e) {
+			if (p == null)
+				p = new Parser(inputArea.Text);
+			if (p.IsRunning()) {
+				p.Interpret();
+				p.Advance();
+			}
+			stackStream.Text = p.GetInterpreter().GetStack().ToString();
+			outputStream.Text = p.GetOutput();
+			if (!p.IsRunning())
+				p = null;
+		}
+
 		private void OpenFile() {
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.Filter = "bf files (*.bf)|*.bf|All files (*.*)|*.*";
@@ -64,38 +101,6 @@ namespace Befunge {
 			catch (Exception ex) {
 				Console.WriteLine("Error: Could not write file to disk. Original error: " + ex.Message);
 			}
-		}
-
-		private void RunHandler(object sender, EventArgs e) {
-			if (p == null)
-				p = new Parser(inputArea.Text);
-			while (p.IsRunning()) {
-				p.Interpret();
-				p.Advance();
-			}
-			outputStream.Text = p.GetOutput();
-			p = null;
-		}
-
-		private void StepHandler(object sender, EventArgs e) {
-			if (p == null)
-				p = new Parser(inputArea.Text);
-			if (p.IsRunning()) {
-				p.Interpret();
-				p.Advance();
-			}
-			stackStream.Text = p.GetInterpreter().GetStack().ToString();
-			outputStream.Text = p.GetOutput();
-			if (!p.IsRunning())
-				p = null;
-		}
-
-		private void OpenHandler(object sender, EventArgs e) {
-			OpenFile();
-		}
-
-		private void SaveHandler(object sender, EventArgs e) {
-			SaveFile();
 		}
 	}
 }
