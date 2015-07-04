@@ -24,8 +24,8 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.inputArea = new System.Windows.Forms.TextBox();
+			this.menu = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,34 +40,36 @@
 			this.terminateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.textBox3 = new System.Windows.Forms.TextBox();
-			this.textBox4 = new System.Windows.Forms.TextBox();
-			this.menuStrip1.SuspendLayout();
+			this.statusStream = new System.Windows.Forms.TextBox();
+			this.stackStream = new System.Windows.Forms.TextBox();
+			this.outputStream = new System.Windows.Forms.TextBox();
+			this.button1 = new System.Windows.Forms.Button();
+			this.menu.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// textBox1
+			// inputArea
 			// 
-			this.textBox1.AcceptsReturn = true;
-			this.textBox1.AcceptsTab = true;
-			this.textBox1.AllowDrop = true;
-			this.textBox1.Location = new System.Drawing.Point(13, 42);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(264, 225);
-			this.textBox1.TabIndex = 0;
+			this.inputArea.AcceptsReturn = true;
+			this.inputArea.AcceptsTab = true;
+			this.inputArea.AllowDrop = true;
+			this.inputArea.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.inputArea.Location = new System.Drawing.Point(13, 42);
+			this.inputArea.Multiline = true;
+			this.inputArea.Name = "inputArea";
+			this.inputArea.Size = new System.Drawing.Size(264, 225);
+			this.inputArea.TabIndex = 0;
 			// 
-			// menuStrip1
+			// menu
 			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.menu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.runToolStripMenuItem,
             this.helpToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(289, 24);
-			this.menuStrip1.TabIndex = 1;
-			this.menuStrip1.Text = "menuStrip1";
+			this.menu.Location = new System.Drawing.Point(0, 0);
+			this.menu.Name = "menu";
+			this.menu.Size = new System.Drawing.Size(289, 24);
+			this.menu.TabIndex = 1;
+			this.menu.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -84,32 +86,31 @@
 			// newToolStripMenuItem
 			// 
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.newToolStripMenuItem.Text = "New";
-			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.saveToolStripMenuItem.Text = "Save";
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As";
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			// 
 			// runToolStripMenuItem
@@ -127,31 +128,32 @@
 			// runToolStripMenuItem1
 			// 
 			this.runToolStripMenuItem1.Name = "runToolStripMenuItem1";
-			this.runToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.runToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
 			this.runToolStripMenuItem1.Text = "Run";
+			this.runToolStripMenuItem1.Click += new System.EventHandler(this.RunHandler);
 			// 
 			// walkToolStripMenuItem
 			// 
 			this.walkToolStripMenuItem.Name = "walkToolStripMenuItem";
-			this.walkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.walkToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.walkToolStripMenuItem.Text = "Walk";
 			// 
 			// crawlToolStripMenuItem
 			// 
 			this.crawlToolStripMenuItem.Name = "crawlToolStripMenuItem";
-			this.crawlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.crawlToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.crawlToolStripMenuItem.Text = "Crawl";
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.resetToolStripMenuItem.Text = "Reset";
 			// 
 			// terminateToolStripMenuItem
 			// 
 			this.terminateToolStripMenuItem.Name = "terminateToolStripMenuItem";
-			this.terminateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.terminateToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.terminateToolStripMenuItem.Text = "Terminate";
 			// 
 			// helpToolStripMenuItem
@@ -168,48 +170,62 @@
 			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.aboutToolStripMenuItem.Text = "About";
 			// 
-			// textBox2
+			// statusBar
 			// 
-			this.textBox2.Location = new System.Drawing.Point(13, 274);
-			this.textBox2.Name = "textBox2";
-			this.textBox2.ReadOnly = true;
-			this.textBox2.Size = new System.Drawing.Size(264, 20);
-			this.textBox2.TabIndex = 2;
-			this.textBox2.Text = "Status Bar";
+			this.statusStream.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.statusStream.Location = new System.Drawing.Point(13, 274);
+			this.statusStream.Name = "statusStream";
+			this.statusStream.ReadOnly = true;
+			this.statusStream.Size = new System.Drawing.Size(264, 20);
+			this.statusStream.TabIndex = 2;
+			this.statusStream.Text = "Status";
 			// 
-			// textBox3
+			// stackBar
 			// 
-			this.textBox3.Location = new System.Drawing.Point(13, 301);
-			this.textBox3.Name = "textBox3";
-			this.textBox3.ReadOnly = true;
-			this.textBox3.Size = new System.Drawing.Size(264, 20);
-			this.textBox3.TabIndex = 3;
-			this.textBox3.Text = "Stack";
+			this.stackStream.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.stackStream.Location = new System.Drawing.Point(13, 301);
+			this.stackStream.Name = "stackStream";
+			this.stackStream.ReadOnly = true;
+			this.stackStream.Size = new System.Drawing.Size(264, 20);
+			this.stackStream.TabIndex = 3;
+			this.stackStream.Text = "Stack";
 			// 
-			// textBox4
+			// outputBar
 			// 
-			this.textBox4.Location = new System.Drawing.Point(13, 328);
-			this.textBox4.Name = "textBox4";
-			this.textBox4.ReadOnly = true;
-			this.textBox4.Size = new System.Drawing.Size(264, 20);
-			this.textBox4.TabIndex = 4;
-			this.textBox4.Text = "Output";
+			this.outputStream.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.outputStream.Location = new System.Drawing.Point(13, 328);
+			this.outputStream.Name = "outputStream";
+			this.outputStream.ReadOnly = true;
+			this.outputStream.Size = new System.Drawing.Size(264, 20);
+			this.outputStream.TabIndex = 4;
+			this.outputStream.Text = "Output";
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(12, 354);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 5;
+			this.button1.Text = "Step";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.StepHandler);
 			// 
 			// GUI
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(289, 361);
-			this.Controls.Add(this.textBox4);
-			this.Controls.Add(this.textBox3);
-			this.Controls.Add(this.textBox2);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.menuStrip1);
+			this.ClientSize = new System.Drawing.Size(289, 382);
+			this.Controls.Add(this.button1);
+			this.Controls.Add(this.outputStream);
+			this.Controls.Add(this.stackStream);
+			this.Controls.Add(this.statusStream);
+			this.Controls.Add(this.inputArea);
+			this.Controls.Add(this.menu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GUI";
 			this.Text = "Befunge Interpreter";
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.menu.ResumeLayout(false);
+			this.menu.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -217,8 +233,8 @@
 
 		#endregion
 
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.MenuStrip menuStrip1;
+		public System.Windows.Forms.TextBox inputArea;
+		private System.Windows.Forms.MenuStrip menu;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -233,9 +249,10 @@
 		private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem terminateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.TextBox textBox3;
-		private System.Windows.Forms.TextBox textBox4;
+		private System.Windows.Forms.TextBox statusStream;
+		private System.Windows.Forms.TextBox stackStream;
+		private System.Windows.Forms.TextBox outputStream;
+		private System.Windows.Forms.Button button1;
 
 	}
 }

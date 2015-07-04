@@ -13,9 +13,7 @@ namespace Befunge {
 		/// </summary>
 		[STAThread]
 		static void Main() {
-			GUI gui = new GUI();
-			Application.Run(gui);
-			Console.WriteLine("The Program has Ended");
+			Application.Run(new GUI());
 		}
 	}
 }

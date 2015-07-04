@@ -25,7 +25,7 @@ namespace Befunge {
 
 		private Random rng = new Random();
 
-		public Interpreter getInterpreter() {
+		public Interpreter GetInterpreter() {
 			return interpreter;
 		}
 
@@ -106,7 +106,7 @@ namespace Befunge {
 					CardinalDirections.LEFT, CardinalDirections.UP})[((int)currentDir + i) % 4];
 		}
 
-		public void interpret() {
+		public void Interpret() {
 			string currentToken = GetToken(currentX, currentY); //retrieves the current token
 			if (currentToken == null) //does nothing if the token is null
 				return;
@@ -248,7 +248,7 @@ namespace Befunge {
 					int n = interpreter.Pop();
 					Advance();
 					for (int i = 0; i < n; i++) {
-						interpret();
+						Interpret();
 					}
 					break;
 				case "@": //stops the program

@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -85,6 +86,8 @@ public class BefungeMain extends JApplet implements ActionListener {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setIconImage(new ImageIcon(
+				getClass().getClassLoader().getResource("befunge\\bf.png")).getImage());	
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -393,9 +396,8 @@ public class BefungeMain extends JApplet implements ActionListener {
 				lastX = parser.getCurrentX();
 				lastY = parser.getCurrentY();
 				parser.advance();
-			}
-			if (parser.isRunning())
 				statusStream.setText("Status: Running. x = " + lastX + ", y = " + lastY);
+			}
 			else
 				statusStream.setText("Status: Stopped. x = " + lastX + ", y = " + lastY);
 			stackStream.setText(parser.getInterpreter().getStack().toString());
