@@ -108,12 +108,12 @@ namespace Befunge
 
 		public override string ToString()
 		{
-			if (top == null) return "";
-			StringBuilder str = new StringBuilder();
+			if (top == null) return "Stack: ";
+			StringBuilder str = new StringBuilder("Stack: ");
 			StackElement current = top;
 			while (current != null)
 			{
-				str.Insert(0, current.Data + " ");
+				str.Insert(7, current.Data + " ");
 				current = current.Next;
 			}
 			return str.ToString();

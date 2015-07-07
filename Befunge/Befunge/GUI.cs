@@ -22,7 +22,19 @@ namespace Befunge {
 		}
 
 		private void NewHandler(object sender, EventArgs e) {
-
+			DialogResult response = DialogResult.No;
+			if ((originalText == null ^ inputArea.Text == null)
+					|| originalText.TrimEnd() == inputArea.Text.TrimEnd())
+				response = ShowConfirmDialog("Do you want to save your work?");
+			if (response == DialogResult.Yes) {
+				SaveFile();
+				inputArea.Text = "";
+				currentFile = null;
+			}
+			else if (response == DialogResult.No) {
+				inputArea.Text = "";
+				currentFile = null;
+			}
 		}
 
 		private void OpenHandler(object sender, EventArgs e) {
@@ -105,6 +117,51 @@ namespace Befunge {
 			catch (Exception ex) {
 				Console.WriteLine("Error: Could not write file to disk. Original error: " + ex.Message);
 			}
+		}
+
+		private static DialogResult ShowConfirmDialog(string str) {
+			Size size = new Size(245, 70);
+			Form inputBox = new Form();
+
+			inputBox.FormBorderStyle = FormBorderStyle.FixedDialog;
+			inputBox.ClientSize = size;
+			inputBox.Text = "Confirm";
+
+			Label label = new Label();
+			label.Size = new Size(size.Width - 10, 23);
+			label.Location = new Point(5, 5);
+			label.Text = str;
+			inputBox.Controls.Add(label);
+
+			Button yesButton = new Button();
+			yesButton.DialogResult = DialogResult.Yes;
+			yesButton.Name = "yesButton";
+			yesButton.Size = new Size(75, 23);
+			yesButton.Text = "&Yes";
+			yesButton.Location = new Point(5, 30);
+			inputBox.Controls.Add(yesButton);
+
+			Button noButton = new Button();
+			noButton.DialogResult = DialogResult.No;
+			noButton.Name = "noButton";
+			noButton.Size = new Size(75, 23);
+			noButton.Text = "&No";
+			noButton.Location = new Point(85, 30);
+			inputBox.Controls.Add(noButton);
+
+			Button cancelButton = new Button();
+			cancelButton.DialogResult = DialogResult.Cancel;
+			cancelButton.Name = "cancelButton";
+			cancelButton.Size = new Size(75, 23);
+			cancelButton.Text = "&Cancel";
+			cancelButton.Location = new Point(165, 30);
+			inputBox.Controls.Add(cancelButton);
+
+			inputBox.AcceptButton = yesButton;
+			inputBox.CancelButton = cancelButton;
+
+			DialogResult result = inputBox.ShowDialog();
+			return result;
 		}
 
 	}

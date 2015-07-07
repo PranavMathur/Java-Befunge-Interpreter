@@ -19,7 +19,7 @@ namespace Befunge {
 		private bool readingString = false;
 		private bool updateNeeded = false;
 
-		private StringBuilder output = new StringBuilder();
+		private StringBuilder output = new StringBuilder("Output: ");
 
 		private Interpreter interpreter = new Interpreter();
 
@@ -314,8 +314,12 @@ namespace Befunge {
 			output.Append(str);
 		}
 
-		public String GetOutput() {
+		public string GetOutput() {
 			return output.ToString();
+		}
+
+		public string GetStack() {
+			return GetInterpreter().GetStack().ToString();
 		}
 
 		public void ResetParser() {
@@ -373,8 +377,8 @@ namespace Befunge {
 
 		public string Prompt(bool str) {
 			string input = "";
-			ShowInputDialog(ref input, str);
-			return input;
+			DialogResult result = ShowInputDialog(ref input, str);
+			return result == DialogResult.OK ? input : "0";
 		}
 
 		private static DialogResult ShowInputDialog(ref string input, bool str) {
