@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="CardinalDirections.cs" />
     <Compile Include="BefungeMain.cs" />
+    <Compile Include="OptionPane.cs" />
     <Compile Include="GUI.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -13,6 +13,7 @@ namespace Befunge {
 		/// </summary>
 		[STAThread]
 		static void Main() {
+			Application.EnableVisualStyles();
 			Application.Run(new GUI());
 		}
 

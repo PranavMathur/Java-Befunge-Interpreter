@@ -8,24 +8,55 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Timers;
 
 namespace Befunge {
 	public partial class GUI : Form {
 
 		Parser p;
 
+		private int lastX;
+		private int lastY;
+
+		private const int WALK_STEP_TIME = 100;
+		private const int CRAWL_STEP_TIME = 333;
+
 		private string currentFile;
 		private string originalText;
 
+		System.Timers.Timer timer;
+
+		delegate void UpdateStreamsCallback();
+
 		public GUI() {
 			InitializeComponent();
+			timer = new System.Timers.Timer();
+			timer.Elapsed += this.StepHandler;
+			lastX = 0;
+			lastY = 0;
+		}
+
+		private void UpdatePositions() {
+			lastX = p.GetCurrentX();
+			lastY = p.GetCurrentY();
+		}
+
+		private void UpdateStreams() {
+			if (outputStream.InvokeRequired) {
+				Invoke(new UpdateStreamsCallback(UpdateStreams));
+			}
+			else {
+				Console.WriteLine("normal");
+				outputStream.Text = p.GetOutput();
+				stackStream.Text = p.GetInterpreter().GetStack().ToString();
+			}
 		}
 
 		private void NewHandler(object sender, EventArgs e) {
 			DialogResult response = DialogResult.No;
 			if ((originalText == null ^ inputArea.Text == null)
 					|| originalText.TrimEnd() == inputArea.Text.TrimEnd())
-				response = ShowConfirmDialog("Do you want to save your work?");
+				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
 			if (response == DialogResult.Yes) {
 				SaveFile();
 				inputArea.Text = "";
@@ -50,28 +81,61 @@ namespace Befunge {
 			SaveFile();
 		}
 
+		private void CloseHandler(object sender, EventArgs e) {
+
+		}
+
 		private void RunHandler(object sender, EventArgs e) {
 			if (p == null)
 				p = new Parser(inputArea.Text);
 			while (p.IsRunning()) {
 				p.Interpret();
+				UpdatePositions();
 				p.Advance();
 			}
-			outputStream.Text = p.GetOutput();
+			UpdateStreams();
 			p = null;
 		}
 
+		private void WalkHandler(object sender, EventArgs e) {
+			timer.Enabled = false;
+			timer.Interval = WALK_STEP_TIME;
+			timer.Enabled = true;
+		}
+
+		private void CrawlHandler(object sender, EventArgs e) {
+			timer.Enabled = false;
+			timer.Interval = CRAWL_STEP_TIME;
+			timer.Enabled = true;
+		}
+
 		private void StepHandler(object sender, EventArgs e) {
-			if (p == null)
+			if (p == null) {
 				p = new Parser(inputArea.Text);
+			}
+
 			if (p.IsRunning()) {
 				p.Interpret();
+				UpdatePositions();
 				p.Advance();
 			}
-			stackStream.Text = p.GetInterpreter().GetStack().ToString();
-			outputStream.Text = p.GetOutput();
-			if (!p.IsRunning())
+			UpdateStreams();
+			if (!p.IsRunning()) {
 				p = null;
+				timer.Enabled = false;
+			}
+		}
+
+		private void ResetHandler(object sender, EventArgs e) {
+
+		}
+
+		private void TerminateHandler(object sender, EventArgs e) {
+
+		}
+
+		private void AboutHandler(object sender, EventArgs e) {
+
 		}
 
 		private void OpenFile() {
@@ -117,51 +181,6 @@ namespace Befunge {
 			catch (Exception ex) {
 				Console.WriteLine("Error: Could not write file to disk. Original error: " + ex.Message);
 			}
-		}
-
-		private static DialogResult ShowConfirmDialog(string str) {
-			Size size = new Size(245, 70);
-			Form inputBox = new Form();
-
-			inputBox.FormBorderStyle = FormBorderStyle.FixedDialog;
-			inputBox.ClientSize = size;
-			inputBox.Text = "Confirm";
-
-			Label label = new Label();
-			label.Size = new Size(size.Width - 10, 23);
-			label.Location = new Point(5, 5);
-			label.Text = str;
-			inputBox.Controls.Add(label);
-
-			Button yesButton = new Button();
-			yesButton.DialogResult = DialogResult.Yes;
-			yesButton.Name = "yesButton";
-			yesButton.Size = new Size(75, 23);
-			yesButton.Text = "&Yes";
-			yesButton.Location = new Point(5, 30);
-			inputBox.Controls.Add(yesButton);
-
-			Button noButton = new Button();
-			noButton.DialogResult = DialogResult.No;
-			noButton.Name = "noButton";
-			noButton.Size = new Size(75, 23);
-			noButton.Text = "&No";
-			noButton.Location = new Point(85, 30);
-			inputBox.Controls.Add(noButton);
-
-			Button cancelButton = new Button();
-			cancelButton.DialogResult = DialogResult.Cancel;
-			cancelButton.Name = "cancelButton";
-			cancelButton.Size = new Size(75, 23);
-			cancelButton.Text = "&Cancel";
-			cancelButton.Location = new Point(165, 30);
-			inputBox.Controls.Add(cancelButton);
-
-			inputBox.AcceptButton = yesButton;
-			inputBox.CancelButton = cancelButton;
-
-			DialogResult result = inputBox.ShowDialog();
-			return result;
 		}
 
 	}
