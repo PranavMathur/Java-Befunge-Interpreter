@@ -46,7 +46,6 @@ namespace Befunge {
 				Invoke(new UpdateStreamsCallback(UpdateStreams));
 			}
 			else {
-				Console.WriteLine("normal");
 				outputStream.Text = p.GetOutput();
 				stackStream.Text = p.GetInterpreter().GetStack().ToString();
 			}
