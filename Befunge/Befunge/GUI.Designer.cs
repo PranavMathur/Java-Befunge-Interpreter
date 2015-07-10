@@ -39,6 +39,7 @@
 			this.walkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.crawlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stepToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.terminateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,7 +48,6 @@
 			this.xStatus = new System.Windows.Forms.Label();
 			this.yStatus = new System.Windows.Forms.Label();
 			this.resetButton = new System.Windows.Forms.Button();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.menu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -106,35 +106,35 @@
 			// newToolStripMenuItem
 			// 
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.newToolStripMenuItem.Text = "New";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.NewHandler);
 			// 
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenHandler);
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.saveToolStripMenuItem.Text = "Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveHandler);
 			// 
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsHandler);
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseHandler);
 			// 
@@ -155,42 +155,47 @@
 			// runToolStripMenuItem1
 			// 
 			this.runToolStripMenuItem1.Name = "runToolStripMenuItem1";
-			this.runToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.runToolStripMenuItem1.Size = new System.Drawing.Size(128, 22);
 			this.runToolStripMenuItem1.Text = "Run";
 			this.runToolStripMenuItem1.Click += new System.EventHandler(this.RunHandler);
 			// 
 			// walkToolStripMenuItem
 			// 
 			this.walkToolStripMenuItem.Name = "walkToolStripMenuItem";
-			this.walkToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.walkToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.walkToolStripMenuItem.Text = "Walk";
 			this.walkToolStripMenuItem.Click += new System.EventHandler(this.WalkHandler);
 			// 
 			// crawlToolStripMenuItem
 			// 
 			this.crawlToolStripMenuItem.Name = "crawlToolStripMenuItem";
-			this.crawlToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.crawlToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.crawlToolStripMenuItem.Text = "Crawl";
 			this.crawlToolStripMenuItem.Click += new System.EventHandler(this.CrawlHandler);
 			// 
 			// stepToolStripMenuItem
 			// 
 			this.stepToolStripMenuItem.Name = "stepToolStripMenuItem";
-			this.stepToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.stepToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.stepToolStripMenuItem.Text = "Step";
 			this.stepToolStripMenuItem.Click += new System.EventHandler(this.StepHandler);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(125, 6);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.resetToolStripMenuItem.Text = "Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.ResetHandler);
 			// 
 			// terminateToolStripMenuItem
 			// 
 			this.terminateToolStripMenuItem.Name = "terminateToolStripMenuItem";
-			this.terminateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.terminateToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.terminateToolStripMenuItem.Text = "Terminate";
 			this.terminateToolStripMenuItem.Click += new System.EventHandler(this.TerminateHandler);
 			// 
@@ -225,7 +230,8 @@
 			// 
 			this.xStatus.AutoSize = true;
 			this.xStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.xStatus.Location = new System.Drawing.Point(12, 285);
+			this.xStatus.ForeColor = System.Drawing.Color.Red;
+			this.xStatus.Location = new System.Drawing.Point(9, 287);
 			this.xStatus.Name = "xStatus";
 			this.xStatus.Size = new System.Drawing.Size(42, 14);
 			this.xStatus.TabIndex = 6;
@@ -235,7 +241,8 @@
 			// 
 			this.yStatus.AutoSize = true;
 			this.yStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.yStatus.Location = new System.Drawing.Point(69, 285);
+			this.yStatus.ForeColor = System.Drawing.Color.Red;
+			this.yStatus.Location = new System.Drawing.Point(57, 287);
 			this.yStatus.Name = "yStatus";
 			this.yStatus.Size = new System.Drawing.Size(42, 14);
 			this.yStatus.TabIndex = 7;
@@ -250,11 +257,6 @@
 			this.resetButton.Text = "Reset";
 			this.resetButton.UseVisualStyleBackColor = true;
 			this.resetButton.Click += new System.EventHandler(this.ResetHandler);
-			// 
-			// toolStripMenuItem1
-			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// GUI
 			// 

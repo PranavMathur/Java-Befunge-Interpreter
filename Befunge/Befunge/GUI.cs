@@ -23,10 +23,11 @@ namespace Befunge {
 
 		private string currentFile;
 		private string originalText;
+		private string editedText;
 
 		System.Timers.Timer timer;
 
-		delegate void UpdateStreamsCallback();
+		delegate void UpdateCallback();
 
 		public GUI() {
 			InitializeComponent();
@@ -36,6 +37,11 @@ namespace Befunge {
 			lastY = 0;
 		}
 
+		public GUI(string file) : this() {
+			OpenFile(file);
+			
+		}
+
 		private void UpdatePositions() {
 			lastX = p.GetCurrentX();
 			lastY = p.GetCurrentY();
@@ -43,18 +49,34 @@ namespace Befunge {
 
 		private void UpdateStreams() {
 			if (outputStream.InvokeRequired) {
-				Invoke(new UpdateStreamsCallback(UpdateStreams));
+				Invoke(new UpdateCallback(UpdateStreams));
 			}
 			else {
-				outputStream.Text = p.GetOutput();
+				xStatus.Text = "x = " + lastX;
+				yStatus.Text = "y = " + lastY;
+				bool running = p.IsRunning();
+				xStatus.ForeColor = running ? Color.Green : Color.Red;
+				yStatus.ForeColor = running ? Color.Green : Color.Red;
 				stackStream.Text = p.GetInterpreter().GetStack().ToString();
+				outputStream.Text = p.GetOutput();
+			}
+		}
+
+		private void UpdateSource() {
+			if (inputArea.InvokeRequired) {
+				Invoke(new UpdateCallback(UpdateSource));
+			}
+			else {
+				inputArea.Text = p.GetRawTokens().TrimEnd();
+				p.SetUpdateNeeded(false);
+				editedText = p.GetRawTokens();
 			}
 		}
 
 		private void NewHandler(object sender, EventArgs e) {
 			DialogResult response = DialogResult.No;
-			if ((originalText == null ^ inputArea.Text == null)
-					|| originalText.TrimEnd() == inputArea.Text.TrimEnd())
+			if ((originalText != null || inputArea.Text != "") && ((originalText == null ^ inputArea.Text == "")
+					|| (originalText.TrimEnd() == inputArea.Text.TrimEnd())))
 				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
 			if (response == DialogResult.Yes) {
 				SaveFile();
@@ -81,7 +103,19 @@ namespace Befunge {
 		}
 
 		private void CloseHandler(object sender, EventArgs e) {
-
+			DialogResult response = DialogResult.No;
+			Console.WriteLine(originalText == null);
+			Console.WriteLine(inputArea.Text == "");
+			if ((originalText != null || inputArea.Text != "") && ((originalText == null ^ inputArea.Text == "")
+					|| (originalText.TrimEnd() == inputArea.Text.TrimEnd())))
+				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
+			if (response == DialogResult.Yes) {
+				SaveFile();
+				Close();
+			}
+			else if (response == DialogResult.No) {
+				Close();
+			}
 		}
 
 		private void RunHandler(object sender, EventArgs e) {
@@ -93,6 +127,9 @@ namespace Befunge {
 				p.Advance();
 			}
 			UpdateStreams();
+			if (p.IsUpdateNeeded()) {
+				UpdateSource();
+			}
 			p = null;
 		}
 
@@ -119,6 +156,9 @@ namespace Befunge {
 				p.Advance();
 			}
 			UpdateStreams();
+			if (p.IsUpdateNeeded()) {
+				UpdateSource();
+			}
 			if (!p.IsRunning()) {
 				p = null;
 				timer.Enabled = false;
@@ -126,7 +166,7 @@ namespace Befunge {
 		}
 
 		private void ResetHandler(object sender, EventArgs e) {
-
+			
 		}
 
 		private void TerminateHandler(object sender, EventArgs e) {
@@ -155,6 +195,20 @@ namespace Befunge {
 				catch (Exception ex) {
 					Console.WriteLine("Error: Could not read file from disk. Original error: " + ex.Message);
 				}
+			}
+		}
+
+		private void OpenFile(string file) {
+			try {
+				string fileStr = file;
+				currentFile = fileStr;
+				using (StreamReader sr = new StreamReader(fileStr)) {
+					inputArea.Text = sr.ReadToEnd().TrimEnd();
+					originalText = inputArea.Text;
+				}
+			}
+			catch (Exception ex) {
+				Console.WriteLine("Error: Could not read file from disk. Original error: " + ex.Message);
 			}
 		}
 

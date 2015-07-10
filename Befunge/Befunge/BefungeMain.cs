@@ -12,9 +12,18 @@ namespace Befunge {
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main() {
+		static void Main(string[] args) {
+
+			Parser p = new Parser("1234____\n    5678");
+			Console.WriteLine(p.GetRawTokens().TrimEnd());
+
 			Application.EnableVisualStyles();
-			Application.Run(new GUI());
+			if (args.Length == 0) {
+				Application.Run(new GUI());
+			}
+			else {
+				Application.Run(new GUI(args[0]));
+			}
 		}
 
 	}

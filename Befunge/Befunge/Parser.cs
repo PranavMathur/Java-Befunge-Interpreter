@@ -328,10 +328,10 @@ namespace Befunge {
 			interpreter = new Interpreter();
 		}
 
-		public String getRawTokens() {
+		public String GetRawTokens() {
 			StringBuilder str = new StringBuilder();
 			for(int i = 0; i < tokens.GetLength(0); i++) {
-				for (int j = 0; i < tokens.GetLength(1); j++) {
+				for (int j = 0; j < tokens.GetLength(1); j++) {
 					string stri = tokens[i, j];
 					if (stri == null)
 						str.Append(" ");
