@@ -194,6 +194,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		if (files.length == 0)
 			return;
 		String str = dialog.getFiles()[0].getPath();
+		System.out.println(str);
 		if (str == null)
 			return;
 		currentFile = str;
@@ -241,10 +242,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		}
 		try {
 			PrintWriter writer = new PrintWriter(str, "UTF-8");
-			for (String i : textArea.getText().split("\n")) {
-				writer.print(i);
-				writer.print("\r\n");
-			}
+			writer.print(textArea.getText());
 			writer.close();
 		}
 		catch (IOException ex) {
@@ -431,10 +429,30 @@ public class BefungeMain extends JApplet implements ActionListener {
 	}
 
 	public static void main(String[] args) throws IOException {
-		
 		BefungeMain GUI = new BefungeMain();
 		GUI.frame.setVisible(true);
 		GUI.frame.setResizable(true);
+
+		Scanner s = null;
+		StringBuilder fileStr = new StringBuilder();
+		
+		try {
+			s = new Scanner(new BufferedReader(new FileReader("E:\\GitHub\\Befunge\\programs\\NotePad.bf")));
+			while (s.hasNext()) {
+				fileStr.append(s.nextLine());
+				fileStr.append("\n");
+			}
+		}
+		catch (IOException ex) {
+			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
+		}
+		finally {
+			if (s != null) {
+				s.close();
+			}
+		}
+		
+		String file = fileStr.toString();
 		
 	}
 

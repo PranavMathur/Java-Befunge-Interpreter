@@ -194,6 +194,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		if (files.length == 0)
 			return;
 		String str = dialog.getFiles()[0].getPath();
+		System.out.println(str);
 		if (str == null)
 			return;
 		currentFile = str;

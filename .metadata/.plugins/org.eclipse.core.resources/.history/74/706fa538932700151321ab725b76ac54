@@ -28,6 +28,7 @@ import javax.swing.Timer;
 
 import java.io.*;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class BefungeMain extends JApplet implements ActionListener {
@@ -194,6 +195,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		if (files.length == 0)
 			return;
 		String str = dialog.getFiles()[0].getPath();
+		System.out.println(str);
 		if (str == null)
 			return;
 		currentFile = str;
@@ -209,6 +211,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 			}
 			textArea.setText(fileStr.toString());
 			originalText = fileStr.toString();
+			System.out.println(Arrays.toString(fileStr.toString().getBytes()));
 		}
 		catch (IOException ex) {
 			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
@@ -241,10 +244,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		}
 		try {
 			PrintWriter writer = new PrintWriter(str, "UTF-8");
-			for (String i : textArea.getText().split("\n")) {
-				writer.print(i);
-				writer.print("\r\n");
-			}
+			writer.print(textArea.getText());
 			writer.close();
 		}
 		catch (IOException ex) {

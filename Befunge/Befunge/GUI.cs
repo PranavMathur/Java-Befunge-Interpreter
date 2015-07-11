@@ -184,17 +184,7 @@ namespace Befunge {
 			dialog.RestoreDirectory = false;
 
 			if (dialog.ShowDialog() == DialogResult.OK) {
-				try {
-					string fileStr = dialog.FileName;
-					currentFile = fileStr;
-					using (StreamReader sr = new StreamReader(fileStr)) {
-						inputArea.Text = sr.ReadToEnd().TrimEnd();
-						originalText = inputArea.Text;
-					}
-				}
-				catch (Exception ex) {
-					Console.WriteLine("Error: Could not read file from disk. Original error: " + ex.Message);
-				}
+				OpenFile(dialog.FileName);
 			}
 		}
 

@@ -4,12 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,6 +27,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
 
 import java.io.*;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class BefungeMain extends JApplet implements ActionListener {
@@ -86,8 +89,11 @@ public class BefungeMain extends JApplet implements ActionListener {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setIconImage(new ImageIcon(
-				getClass().getClassLoader().getResource("befunge\\bf.png")).getImage());	
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		URL url = getClass().getResource("bf.png");
+		Image img = tk.createImage(url);
+		tk.prepareImage(img, -1, -1, null);
+		frame.setIconImage(img);
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -189,6 +195,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		if (files.length == 0)
 			return;
 		String str = dialog.getFiles()[0].getPath();
+		System.out.println(str);
 		if (str == null)
 			return;
 		currentFile = str;
@@ -423,9 +430,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BefungeMain GUI = new BefungeMain();
-		GUI.frame.setVisible(true);
-		GUI.frame.setResizable(true);
+//		BefungeMain GUI = new BefungeMain();
+//		GUI.frame.setVisible(true);
+//		GUI.frame.setResizable(true);
+		
 	}
 
 }
