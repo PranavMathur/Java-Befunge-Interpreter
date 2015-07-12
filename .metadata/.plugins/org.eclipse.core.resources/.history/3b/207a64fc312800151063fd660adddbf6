@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -242,7 +241,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 		}
 		try {
 			PrintWriter writer = new PrintWriter(str, "UTF-8");
-			writer.print(textArea.getText());
+			for (String i : textArea.getText().split("\n")) {
+				writer.print(i);
+				writer.print("\r\n");
+			}
 			writer.close();
 		}
 		catch (IOException ex) {
@@ -429,9 +431,11 @@ public class BefungeMain extends JApplet implements ActionListener {
 	}
 
 	public static void main(String[] args) throws IOException {
+		
 		BefungeMain GUI = new BefungeMain();
 		GUI.frame.setVisible(true);
 		GUI.frame.setResizable(true);
+		
 	}
 
 }

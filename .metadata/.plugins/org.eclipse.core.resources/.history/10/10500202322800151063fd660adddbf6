@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -89,14 +88,11 @@ public class BefungeMain extends JApplet implements ActionListener {
 	public BefungeMain() {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		ImageIcon icon = new ImageIcon(
-//				getClass().getClassLoader().getResource("befunge\\bf.png"));
-//		if (icon != null)
-//			frame.setIconImage(icon.getImage());	
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		URL url = getClass().getResource("befunge\\bf.png");
+		URL url = getClass().getResource("bf.png");
 		Image img = tk.createImage(url);
 		tk.prepareImage(img, -1, -1, null);
+		frame.setIconImage(img);
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setOpaque(true);
@@ -104,7 +100,6 @@ public class BefungeMain extends JApplet implements ActionListener {
 		textArea.setWrapStyleWord(true);
 		textArea.setEditable(true);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 12));
-		textArea.setText("Test2");
 		scroller = new JScrollPane(textArea);
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -246,7 +241,10 @@ public class BefungeMain extends JApplet implements ActionListener {
 		}
 		try {
 			PrintWriter writer = new PrintWriter(str, "UTF-8");
-			writer.print(textArea.getText());
+			for (String i : textArea.getText().split("\n")) {
+				writer.print(i);
+				writer.print("\r\n");
+			}
 			writer.close();
 		}
 		catch (IOException ex) {
@@ -433,9 +431,11 @@ public class BefungeMain extends JApplet implements ActionListener {
 	}
 
 	public static void main(String[] args) throws IOException {
-		BefungeMain GUI = new BefungeMain();
-		GUI.frame.setVisible(true);
-		GUI.frame.setResizable(true);
+//		
+//		BefungeMain GUI = new BefungeMain();
+//		GUI.frame.setVisible(true);
+//		GUI.frame.setResizable(true);
+		
 	}
 
 }

@@ -35,6 +35,9 @@ namespace Befunge {
 			timer.Elapsed += this.StepHandler;
 			lastX = 0;
 			lastY = 0;
+			currentFile = null;
+			originalText = null;
+			editedText = null;
 		}
 
 		public GUI(string file) : this() {
@@ -54,11 +57,11 @@ namespace Befunge {
 			else {
 				xStatus.Text = "x = " + lastX;
 				yStatus.Text = "y = " + lastY;
-				bool running = p.IsRunning();
+				bool running = (p ?? new Parser("")).IsRunning();
 				xStatus.ForeColor = running ? Color.Green : Color.Red;
 				yStatus.ForeColor = running ? Color.Green : Color.Red;
-				stackStream.Text = p.GetInterpreter().GetStack().ToString();
-				outputStream.Text = p.GetOutput();
+				stackStream.Text = (p ?? new Parser("")).GetInterpreter().GetStack().ToString();
+				outputStream.Text = (p ?? new Parser("")).GetOutput();
 			}
 		}
 
@@ -104,8 +107,6 @@ namespace Befunge {
 
 		private void CloseHandler(object sender, EventArgs e) {
 			DialogResult response = DialogResult.No;
-			Console.WriteLine(originalText == null);
-			Console.WriteLine(inputArea.Text == "");
 			if ((originalText != null || inputArea.Text != "") && ((originalText == null ^ inputArea.Text == "")
 					|| (originalText.TrimEnd() == inputArea.Text.TrimEnd())))
 				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
