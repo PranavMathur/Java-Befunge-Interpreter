@@ -25,6 +25,8 @@ namespace Befunge {
 		private string originalText;
 		private string editedText;
 
+		private bool terminated;
+
 		System.Timers.Timer timer;
 
 		delegate void UpdateCallback();
@@ -38,6 +40,7 @@ namespace Befunge {
 			currentFile = null;
 			originalText = null;
 			editedText = null;
+			terminated = false;
 		}
 
 		public GUI(string file) : this() {
@@ -46,8 +49,8 @@ namespace Befunge {
 		}
 
 		private void UpdatePositions() {
-			lastX = p.GetCurrentX();
-			lastY = p.GetCurrentY();
+			lastX = (p ?? new Parser("")).GetCurrentX();
+			lastY = (p ?? new Parser("")).GetCurrentY();
 		}
 
 		private void UpdateStreams() {
@@ -66,11 +69,11 @@ namespace Befunge {
 		}
 
 		private void UpdateSource() {
-			if (inputArea.InvokeRequired) {
+			if (textArea.InvokeRequired) {
 				Invoke(new UpdateCallback(UpdateSource));
 			}
 			else {
-				inputArea.Text = p.GetRawTokens().TrimEnd();
+				textArea.Text = p.GetRawTokens().TrimEnd();
 				p.SetUpdateNeeded(false);
 				editedText = p.GetRawTokens();
 			}
@@ -78,16 +81,16 @@ namespace Befunge {
 
 		private void NewHandler(object sender, EventArgs e) {
 			DialogResult response = DialogResult.No;
-			if ((originalText != null || inputArea.Text != "") && ((originalText == null ^ inputArea.Text == "")
-					|| (originalText.TrimEnd() == inputArea.Text.TrimEnd())))
+			if ((originalText != null || textArea.Text != "") && ((originalText == null ^ textArea.Text == "")
+					|| (originalText.TrimEnd() == textArea.Text.TrimEnd())))
 				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
 			if (response == DialogResult.Yes) {
 				SaveFile();
-				inputArea.Text = "";
+				textArea.Text = "";
 				currentFile = null;
 			}
 			else if (response == DialogResult.No) {
-				inputArea.Text = "";
+				textArea.Text = "";
 				currentFile = null;
 			}
 		}
@@ -107,8 +110,8 @@ namespace Befunge {
 
 		private void CloseHandler(object sender, EventArgs e) {
 			DialogResult response = DialogResult.No;
-			if ((originalText != null || inputArea.Text != "") && ((originalText == null ^ inputArea.Text == "")
-					|| (originalText.TrimEnd() == inputArea.Text.TrimEnd())))
+			if ((originalText != null || textArea.Text != "") && ((originalText == null ^ textArea.Text == "")
+					|| (originalText.TrimEnd() == textArea.Text.TrimEnd())))
 				response = OptionPane.ShowConfirmDialog("Do you want to save your work?");
 			if (response == DialogResult.Yes) {
 				SaveFile();
@@ -121,8 +124,9 @@ namespace Befunge {
 
 		private void RunHandler(object sender, EventArgs e) {
 			if (p == null)
-				p = new Parser(inputArea.Text);
-			while (p.IsRunning()) {
+				p = new Parser(textArea.Text);
+			terminated = false;
+			while (p.IsRunning() && !terminated) {
 				p.Interpret();
 				UpdatePositions();
 				p.Advance();
@@ -147,8 +151,10 @@ namespace Befunge {
 		}
 
 		private void StepHandler(object sender, EventArgs e) {
+			if (originalText == null)
+				originalText = textArea.Text;
 			if (p == null) {
-				p = new Parser(inputArea.Text);
+				p = new Parser(textArea.Text);
 			}
 
 			if (p.IsRunning()) {
@@ -160,22 +166,26 @@ namespace Befunge {
 			if (p.IsUpdateNeeded()) {
 				UpdateSource();
 			}
-			if (!p.IsRunning()) {
+			if (!p.IsRunning() || terminated) {
 				p = null;
 				timer.Enabled = false;
 			}
 		}
 
 		private void ResetHandler(object sender, EventArgs e) {
-			
+			p = null;
+			if (editedText != null && editedText != originalText)
+				textArea.Text = originalText.TrimEnd();
+			originalText = null;
+			UpdateStreams();
 		}
 
 		private void TerminateHandler(object sender, EventArgs e) {
-
+			terminated = true;
 		}
 
 		private void AboutHandler(object sender, EventArgs e) {
-
+			MessageBox.Show("About Befunge");
 		}
 
 		private void OpenFile() {
@@ -194,8 +204,8 @@ namespace Befunge {
 				string fileStr = file;
 				currentFile = fileStr;
 				using (StreamReader sr = new StreamReader(fileStr)) {
-					inputArea.Text = sr.ReadToEnd().TrimEnd();
-					originalText = inputArea.Text;
+					textArea.Text = sr.ReadToEnd().TrimEnd();
+					originalText = textArea.Text;
 				}
 			}
 			catch (Exception ex) {
@@ -205,7 +215,7 @@ namespace Befunge {
 
 		private void SaveFile() {
 			string fileStr = currentFile;
-			originalText = inputArea.Text;
+			originalText = textArea.Text;
 			if (fileStr == null) {
 				SaveFileDialog dialog = new SaveFileDialog();
 				dialog.Filter = "bf files (*.bf)|*.bf|All files (*.*)|*.*";
@@ -219,7 +229,7 @@ namespace Befunge {
 			}
 			try {
 				using (StreamWriter sr = new StreamWriter(fileStr)) {
-					sr.WriteLine(inputArea.Text);
+					sr.WriteLine(textArea.Text);
 				}
 			}
 			catch (Exception ex) {

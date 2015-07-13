@@ -49,7 +49,7 @@ namespace Befunge {
 			return result;
 		}
 
-		public static DialogResult ShowInputDialog(ref string input, bool str) {
+		public static DialogResult ShowInputDialog(ref string input, string str) {
 			Size size = new Size(200, 100);
 			Form inputBox = new Form();
 
@@ -60,7 +60,7 @@ namespace Befunge {
 			Label label = new Label();
 			label.Size = new Size(size.Width - 10, 23);
 			label.Location = new Point(5, 5);
-			label.Text = "Enter a" + (str ? " String." : "n Integer.");
+			label.Text = str;
 			inputBox.Controls.Add(label);
 
 			TextBox textBox = new TextBox();

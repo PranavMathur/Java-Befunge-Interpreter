@@ -377,7 +377,7 @@ namespace Befunge {
 
 		public string Prompt(bool str) {
 			string input = "";
-			DialogResult result = OptionPane.ShowInputDialog(ref input, str);
+			DialogResult result = OptionPane.ShowInputDialog(ref input, "Enter a " + (str ? "String." : "Integer."));
 			return result == DialogResult.OK ? input : "0";
 		}
 

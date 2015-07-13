@@ -24,7 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GUI));
-			this.inputArea = new System.Windows.Forms.TextBox();
+			this.textArea = new System.Windows.Forms.TextBox();
 			this.stackStream = new System.Windows.Forms.Label();
 			this.outputStream = new System.Windows.Forms.Label();
 			this.stepButton = new System.Windows.Forms.Button();
@@ -53,15 +53,15 @@
 			// 
 			// inputArea
 			// 
-			this.inputArea.AcceptsReturn = true;
-			this.inputArea.AcceptsTab = true;
-			this.inputArea.AllowDrop = true;
-			this.inputArea.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.inputArea.Location = new System.Drawing.Point(13, 42);
-			this.inputArea.Multiline = true;
-			this.inputArea.Name = "inputArea";
-			this.inputArea.Size = new System.Drawing.Size(393, 225);
-			this.inputArea.TabIndex = 0;
+			this.textArea.AcceptsReturn = true;
+			this.textArea.AcceptsTab = true;
+			this.textArea.AllowDrop = true;
+			this.textArea.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textArea.Location = new System.Drawing.Point(13, 42);
+			this.textArea.Multiline = true;
+			this.textArea.Name = "inputArea";
+			this.textArea.Size = new System.Drawing.Size(393, 225);
+			this.textArea.TabIndex = 0;
 			// 
 			// stackStream
 			// 
@@ -269,7 +269,7 @@
 			this.Controls.Add(this.stepButton);
 			this.Controls.Add(this.outputStream);
 			this.Controls.Add(this.stackStream);
-			this.Controls.Add(this.inputArea);
+			this.Controls.Add(this.textArea);
 			this.Controls.Add(this.menu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GUI";
@@ -283,7 +283,7 @@
 
 		#endregion
 
-		public System.Windows.Forms.TextBox inputArea;
+		public System.Windows.Forms.TextBox textArea;
 		private System.Windows.Forms.Label stackStream;
 		private System.Windows.Forms.Label outputStream;
 		private System.Windows.Forms.Button stepButton;

@@ -180,6 +180,7 @@ public class BefungeMain extends JApplet implements ActionListener {
 		frame.setJMenuBar(menuBar);
 		frame.pack();
 		frame.setLocationByPlatform(true);
+		terminated = false;
 	}
 
 	/**
