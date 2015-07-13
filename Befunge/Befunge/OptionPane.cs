@@ -46,6 +46,7 @@ namespace Befunge {
 			inputBox.CancelButton = cancelButton;
 
 			DialogResult result = inputBox.ShowDialog();
+			inputBox.Close();
 			return result;
 		}
 
@@ -90,6 +91,7 @@ namespace Befunge {
 
 			DialogResult result = inputBox.ShowDialog();
 			input = textBox.Text;
+			inputBox.Close();
 			return result;
 		}
 	}
