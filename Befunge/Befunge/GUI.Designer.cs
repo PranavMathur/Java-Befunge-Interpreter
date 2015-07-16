@@ -51,22 +51,22 @@
 			this.menu.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// inputArea
+			// textArea
 			// 
 			this.textArea.AcceptsReturn = true;
 			this.textArea.AcceptsTab = true;
 			this.textArea.AllowDrop = true;
 			this.textArea.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textArea.Location = new System.Drawing.Point(13, 42);
+			this.textArea.Location = new System.Drawing.Point(13, 27);
 			this.textArea.Multiline = true;
-			this.textArea.Name = "inputArea";
-			this.textArea.Size = new System.Drawing.Size(393, 225);
+			this.textArea.Name = "textArea";
+			this.textArea.Size = new System.Drawing.Size(409, 281);
 			this.textArea.TabIndex = 0;
 			// 
 			// stackStream
 			// 
 			this.stackStream.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.stackStream.Location = new System.Drawing.Point(9, 301);
+			this.stackStream.Location = new System.Drawing.Point(9, 325);
 			this.stackStream.Name = "stackStream";
 			this.stackStream.Size = new System.Drawing.Size(393, 13);
 			this.stackStream.TabIndex = 3;
@@ -75,7 +75,7 @@
 			// outputStream
 			// 
 			this.outputStream.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.outputStream.Location = new System.Drawing.Point(10, 314);
+			this.outputStream.Location = new System.Drawing.Point(9, 338);
 			this.outputStream.Name = "outputStream";
 			this.outputStream.Size = new System.Drawing.Size(393, 13);
 			this.outputStream.TabIndex = 4;
@@ -222,7 +222,7 @@
             this.helpToolStripMenuItem});
 			this.menu.Location = new System.Drawing.Point(0, 0);
 			this.menu.Name = "menu";
-			this.menu.Size = new System.Drawing.Size(418, 24);
+			this.menu.Size = new System.Drawing.Size(434, 24);
 			this.menu.TabIndex = 1;
 			this.menu.Text = "menuStrip1";
 			// 
@@ -231,7 +231,7 @@
 			this.xStatus.AutoSize = true;
 			this.xStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.xStatus.ForeColor = System.Drawing.Color.Red;
-			this.xStatus.Location = new System.Drawing.Point(9, 287);
+			this.xStatus.Location = new System.Drawing.Point(9, 311);
 			this.xStatus.Name = "xStatus";
 			this.xStatus.Size = new System.Drawing.Size(42, 14);
 			this.xStatus.TabIndex = 6;
@@ -242,7 +242,7 @@
 			this.yStatus.AutoSize = true;
 			this.yStatus.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.yStatus.ForeColor = System.Drawing.Color.Red;
-			this.yStatus.Location = new System.Drawing.Point(57, 287);
+			this.yStatus.Location = new System.Drawing.Point(57, 311);
 			this.yStatus.Name = "yStatus";
 			this.yStatus.Size = new System.Drawing.Size(42, 14);
 			this.yStatus.TabIndex = 7;
@@ -262,7 +262,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(418, 382);
+			this.ClientSize = new System.Drawing.Size(434, 381);
 			this.Controls.Add(this.resetButton);
 			this.Controls.Add(this.yStatus);
 			this.Controls.Add(this.xStatus);
