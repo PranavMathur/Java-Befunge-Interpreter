@@ -1,4 +1,4 @@
-package befunge;
+package io.github.pranavmathur.befunge;
 
 import java.awt.BorderLayout;
 import java.awt.FileDialog;

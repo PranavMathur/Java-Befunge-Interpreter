@@ -1,4 +1,4 @@
-package befunge;
+package io.github.pranavmathur.befunge;
 
 import javax.swing.JOptionPane;
 

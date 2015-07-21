@@ -1,4 +1,4 @@
-package befunge;
+package io.github.pranavmathur.befunge;
 
 /**
  * The stack is the main data structure in Befunge.
