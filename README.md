@@ -1,3 +1,3 @@
 # Befunge
 
-Befunge Interpreters in C# and Java
+A Befunge Interpreter written using Java and javax.swing
