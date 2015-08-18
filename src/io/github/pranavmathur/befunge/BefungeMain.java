@@ -306,7 +306,8 @@ public class BefungeMain extends JApplet implements ActionListener {
 			if (parser == null)
 				parser = new Parser(textArea.getText());
 			terminated = false;
-			saveFile();
+			if (currentFile != null)
+				saveFile();
 			while (parser.isRunning() && !terminated) {
 				parser.interpret();
 				lastX = parser.getCurrentX();
