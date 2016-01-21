@@ -92,7 +92,7 @@ public class BefungeMain implements ActionListener {
 		frame = new JFrame("Befunge Interpreter");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		URL url = getClass().getResource("bf.png");
+		URL url = getClass().getResource("/bf.png");
 		Image img = tk.createImage(url);
 		tk.prepareImage(img, -1, -1, null);
 		frame.setIconImage(img);
