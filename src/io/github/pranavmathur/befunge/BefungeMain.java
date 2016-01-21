@@ -202,26 +202,19 @@ public class BefungeMain implements ActionListener {
 			return;
 		currentFile = str;
 
-		Scanner s = null;
 		StringBuilder fileStr = new StringBuilder();
 
-		try {
-			s = new Scanner(new BufferedReader(new FileReader(str)));
+		try (Scanner s = new Scanner(new BufferedReader(new FileReader(str)))) {
 			while (s.hasNext()) {
 				fileStr.append(s.nextLine());
 				fileStr.append("\n");
 			}
-			textArea.setText(fileStr.toString());
-			originalText = fileStr.toString();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
 		}
-		finally {
-			if (s != null) {
-				s.close();
-			}
-		}
+
+		textArea.setText(fileStr.toString());
+		originalText = fileStr.toString();
 
 	}
 
@@ -243,15 +236,12 @@ public class BefungeMain implements ActionListener {
 			str = dialog.getFiles()[0].getPath();
 			currentFile = str;
 		}
-		try {
-			PrintWriter writer = new PrintWriter(str, "UTF-8");
+		try (PrintWriter writer = new PrintWriter(str, "UTF-8")) {
 			for (String i : textArea.getText().split("\n")) {
 				writer.print(i);
 				writer.print("\r\n");
 			}
-			writer.close();
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null,  "Error: File Not Found");
 		}
 	}
