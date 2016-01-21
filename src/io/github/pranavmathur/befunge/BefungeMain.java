@@ -8,6 +8,11 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
@@ -25,7 +30,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.Timer;
 
-import java.io.*;
 import java.net.URL;
 import java.util.Scanner;
 
