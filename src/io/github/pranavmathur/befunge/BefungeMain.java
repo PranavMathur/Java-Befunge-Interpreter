@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.Toolkit;
 
 import javax.swing.BoxLayout;
-import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -30,7 +29,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.Scanner;
 
-public class BefungeMain extends JApplet implements ActionListener {
+public class BefungeMain implements ActionListener {
 	
 	static final long serialVersionUID = 0l;
 
